@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Burgundy Dice Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+    <!-- Initial Overlay -->
+    <div id="start-screen" class="overlay active">
+        <div class="glass-panel text-center">
+            <h1 class="title-main">Castles of Burgundy</h1>
+            <p class="subtitle">The Dice Game (Solo Experience)</p>
+            <div class="map-selection">
+                <h2 id="txt-select-duchy">Select your Map to start</h2>
+                <div class="map-cards">
+                    <div class="map-card" data-map="A">Map A</div>
+                    <div class="map-card" data-map="B">Map B</div>
+                    <div class="map-card" data-map="C">Map C</div>
+                    <div class="map-card" data-map="D">Map D</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Game UI -->
+    <div id="game-ui" class="hidden">
+        <!-- Top Nav -->
+        <div id="top-nav"
+            style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; position: relative; z-index: 100;">
+            <h2 id="ui-title" <h2 id="ui-title"
+                style="margin: 0; font-size: 1.4rem; color: var(--text-main); font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                The Castles of Burgundy: The Dice Game <span
+                    style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">v1.10</span>
+            </h2>
+            <div class="dropdown">
+                <button id="btn-menu" class="btn small"
+                    style="background: rgba(0,0,0,0.1); color: var(--text-main);"><span id="txt-menu">☰
+                        Menu</span></button>
+                <div id="dropdown-menu" class="dropdown-content">
+                    <button id="btn-lang-toggle" class="btn small" style="background: var(--accent); color: white;">🇺🇸
+                        English / 🇧🇷 Português</button>
+                    <button id="btn-history" class="btn small" style="color: var(--text-main);"><span
+                            id="txt-history-btn">Scores</span></button>
+                    <button id="btn-rules" class="btn small" style="color: var(--text-main);"><span
+                            id="txt-rules-btn">Rules</span></button>
+                    <button id="btn-new-game" class="btn small danger" style="margin-top: 10px;"><span
+                            id="txt-newgame-btn">New Game</span></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Bar: Scores & Resources -->
+        <header class="glass-header">
+            <div class="stat-group">
+                <div class="stat"><span class="label">Phase:</span> <span id="val-phase" class="val">1</span></div>
+                <div class="stat"><span class="label">Turn:</span> <span id="val-turn" class="val">1</span></div>
+            </div>
+
+            <div class="stat-group score-display">
+                <div class="stat tooltip-wrapper">
+                    <span class="label">Score</span>
+                    <span id="val-score" class="val highlight" style="cursor:help;">0</span>
+                    <div class="tooltip-content" id="score-history-tooltip">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-group resources">
+                <button class="res-btn" id="btn-worker" title="Worker (+1/-1 to Die)"><span class="icon worker">⚒</span>
+                    <span id="val-workers">0</span></button>
+                <button class="res-btn" id="btn-monk" title="Monk (Change Die Color)"><span class="icon monk">✝</span>
+                    <span id="val-monks">0</span></button>
+                <button class="res-btn" id="btn-silver" title="Silver (Use Extra Die Combo)"><span
+                        class="icon silver">🪙</span> <span id="val-silver">0</span></button>
+                <button class="res-btn" id="btn-commodity" title="Sell Commodities (Requires Double Hourglass)"><span
+                        class="icon commodity">📦</span> <span id="val-commodities">0</span></button>
+            </div>
+        </header>
+
+        <main class="game-container">
+            <!-- Left Sidebar for Guides -->
+            <aside class="left-sidebar">
+                <div class="glass-panel" style="padding: 1rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <h3 id="txt-progress-title">Completion Progress</h3>
+                        <button class="btn small"
+                            style="padding: 2px 8px; font-size: 0.8rem; background: var(--accent); color: white;"
+                            onclick="document.getElementById('modal-rules').classList.remove('hidden'); document.getElementById('modal-rules').classList.add('active'); document.getElementById('scoring-rules').scrollIntoView();"><span
+                                id="txt-guide-btn">Guide</span></button>
+                    </div>
+                    <div id="color-track-container" class="track-grid">
+                        <!-- Color tracks dynamically filled -->
+                    </div>
+                </div>
+
+                <div class="glass-panel" style="padding: 1rem; margin-top: 1rem;">
+                    <h3 id="txt-area-score-title" style="margin-bottom: 0.5rem;">Area Score</h3>
+                    <div id="area-score-container" style="font-size: 0.9rem;">
+                        <!-- Dynamically filled table -->
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Board Area -->
+            <section class="board-section">
+                <div id="board-container">
+                    <!-- SVG will be injected here -->
+                </div>
+            </section>
+
+            <!-- Controls Sidebar -->
+            <aside class="sidebar glass-panel">
+                <h2 id="txt-dice-title">Dice Rolled</h2>
+                <div class="dice-container" id="dice-container">
+                    <div class="die number" id="die-n1">?</div>
+                    <div class="die number" id="die-n2">?</div>
+                    <div class="die color" id="die-c1">?</div>
+                    <div class="die color" id="die-c2">?</div>
+                    <div class="die timer" id="die-timer">⏳</div>
+                </div>
+
+                <div class="action-panel">
+                    <h3 id="txt-actions-title">Actions</h3>
+                    <p id="txt-actions-hint" class="hint">Select a color die and a number die to mark a valid hex.</p>
+                    <p id="action-hint" class="hint" style="font-weight: bold; color: var(--accent); min-height: 40px;">
+                    </p>
+                    <div class="button-group" style="display: flex; gap: 10px;">
+                        <button id="btn-end-turn" class="btn primary"><span id="txt-end-turn-btn">End
+                                Turn</span></button>
+                        <button id="btn-undo" class="btn secondary" disabled><span
+                                id="txt-undo-btn">Undo</span></button>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+    </div>
+
+    <!-- Modals for Worker and Monk actions -->
+    <div id="modal-worker" class="overlay hidden">
+        <div class="glass-panel small text-center" style="z-index: 1000; position: relative;">
+            <h3>Use Worker ⚒</h3>
+            <p id="txt-worker-desc">Change a number die to ANY value:</p>
+            <div style="display:flex; justify-content:space-around; margin:15px 0;">
+                <button class="btn small" id="btn-w-n1">Die 1</button>
+                <button class="btn small" id="btn-w-n2">Die 2</button>
+            </div>
+            <div id="worker-numbers" class="hidden">
+                <p id="txt-worker-pick">Choose the new number:</p>
+                <div style="display:flex; gap:5px; justify-content:center; flex-wrap:wrap;">
+                    <button class="btn val-btn" data-val="1"
+                        style="font-weight:bold; font-size:1.2rem; width:40px; height:40px; background:var(--card-bg);">1</button>
+                    <button class="btn val-btn" data-val="2"
+                        style="font-weight:bold; font-size:1.2rem; width:40px; height:40px; background:var(--card-bg);">2</button>
+                    <button class="btn val-btn" data-val="3"
+                        style="font-weight:bold; font-size:1.2rem; width:40px; height:40px; background:var(--card-bg);">3</button>
+                    <button class="btn val-btn" data-val="4"
+                        style="font-weight:bold; font-size:1.2rem; width:40px; height:40px; background:var(--card-bg);">4</button>
+                    <button class="btn val-btn" data-val="5"
+                        style="font-weight:bold; font-size:1.2rem; width:40px; height:40px; background:var(--card-bg);">5</button>
+                    <button class="btn val-btn" data-val="6"
+                        style="font-weight:bold; font-size:1.2rem; width:40px; height:40px; background:var(--card-bg);">6</button>
+                </div>
+            </div>
+            <button class="btn danger"
+                onclick="document.getElementById('modal-worker').classList.remove('active'); setTimeout(() => document.getElementById('modal-worker').classList.add('hidden'), 300)"
+                style="margin-top:10px; width:100%;">Cancel</button>
+        </div>
+    </div>
+
+    <div id="modal-monk" class="overlay hidden">
+        <div class="glass-panel small text-center">
+            <h3>Use Monk ✝</h3>
+            <p>Change a color die to any other color.</p>
+            <div class="color-picker" id="monk-colors">
+                <div class="c-swatch orange" data-c="orange"></div>
+                <div class="c-swatch blue" data-c="blue"></div>
+                <div class="c-swatch green" data-c="green"></div>
+                <div class="c-swatch yellow" data-c="yellow"></div>
+                <div class="c-swatch purple" data-c="purple"></div>
+                <div class="c-swatch gray" data-c="gray"></div>
+            </div>
+            <p>Target:</p>
+            <div class="mod-buttons">
+                <button class="btn" id="btn-m-c1">Color Die 1</button>
+                <button class="btn" id="btn-m-c2">Color Die 2</button>
+            </div>
+            <button class="btn danger"
+                onclick="document.getElementById('modal-monk').classList.remove('active'); setTimeout(() => document.getElementById('modal-monk').classList.add('hidden'), 300)">Cancel</button>
+        </div>
+    </div>
+
+    <div id="modal-history" class="overlay hidden">
+        <div class="glass-panel small text-center">
+            <h3>Score History 🏆</h3>
+            <div id="history-list" style="margin: 15px 0; max-height: 200px; overflow-y: auto; text-align: left;">
+                <!-- Filled dynamically by main.js -->
+            </div>
+            <button class="btn primary"
+                onclick="document.getElementById('modal-history').classList.remove('active'); setTimeout(() => document.getElementById('modal-history').classList.add('hidden'), 300)">Close</button>
+        </div>
+    </div>
+
+    <!-- Rules Modal -->
+    <div id="modal-rules" class="overlay hidden">
+        <div class="glass-panel text-left" style="max-height: 80vh; overflow-y: auto; padding: 30px;">
+            <h2>Rules Summary</h2>
+            <div class="rules-content" style="line-height: 1.4; font-size: 0.9em;">
+                <h3>Turn Structure</h3>
+                <p>Roll dice. You can use 1 number die + 1 color die to mark an adjacent valid hex. Or, if you have
+                    Silver, use it to mark the remaining pair.</p>
+
+                <h3>Hex Placement Rules</h3>
+                <ul style="text-align: left;">
+                    <li><strong>City (Orange)</strong>: Needs different numbers in the same area.</li>
+                    <li><strong>Pasture (Yellow)</strong>: Needs identical numbers in the same area.</li>
+                    <li><strong>Monastery (Purple)</strong>: Must be 1 or 2.</li>
+                    <li><strong>Mine (Gray)</strong>: Must be 3 or 4.</li>
+                    <li><strong>River (Blue)</strong>: Must be 5 or 6.</li>
+                    <li><strong>Castle (Green)</strong>: Must match a number of any marked neighbor. Grants instant
+                        bonus: Workers, Monks, Silver, or Commodities depending on its icon.</li>
+                </ul>
+
+                <h3>Resources & Castles</h3>
+                <ul style="text-align: left;">
+                    <li><strong>Worker (Orange Icon)</strong>: +/- 1 to a number die (wraps 1 to 6).</li>
+                    <li><strong>Monk (Purple Icon)</strong>: Change a color die to any color.</li>
+                    <li><strong>Silver (Gray Icon)</strong>: Grants a second action per turn (allows placing the second
+                        pair of dice).</li>
+                    <li><strong>Commodity (Blue Icon)</strong>: Automatically sold when a double hourglass (⏳⏳) is
+                        rolled. Gives 1 Silver and 2 VP per commodity sold.</li>
+                </ul>
+
+                <h3 id="scoring-rules">Scoring & Area Bonuses</h3>
+                <p>Completing a colored area immediately awards Victory Points (VP) based on its size, plus a Phase
+                    Completion bonus. <strong>Pastures (Yellow) award Double VP for their size.</strong></p>
+                <div style="display: flex; gap: 40px; justify-content: space-around; margin: 10px 0;">
+                    <table style="border-collapse: collapse; text-align: left;">
+                        <tr>
+                            <th style="border-bottom: 1px solid var(--text-muted); padding: 4px;">Area Size</th>
+                            <th style="border-bottom: 1px solid var(--text-muted); padding: 4px;">VP</th>
+                        </tr>
+                        <tr>
+                            <td>1 Hex</td>
+                            <td>1 VP</td>
+                        </tr>
+                        <tr>
+                            <td>2 Hexes</td>
+                            <td>3 VP</td>
+                        </tr>
+                        <tr>
+                            <td>3 Hexes</td>
+                            <td>6 VP</td>
+                        </tr>
+                        <tr>
+                            <td>4 Hexes</td>
+                            <td>10 VP</td>
+                        </tr>
+                        <tr>
+                            <td>5 Hexes</td>
+                            <td>15 VP</td>
+                        </tr>
+                        <tr>
+                            <td>6 Hexes</td>
+                            <td>21 VP</td>
+                        </tr>
+                        <tr>
+                            <td>7 Hexes</td>
+                            <td>28 VP</td>
+                        </tr>
+                    </table>
+                    <table style="border-collapse: collapse; text-align: left;">
+                        <tr>
+                            <th style="border-bottom: 1px solid var(--text-muted); padding: 4px;">Phase</th>
+                            <th style="border-bottom: 1px solid var(--text-muted); padding: 4px;">Extra VP</th>
+                        </tr>
+                        <tr>
+                            <td>Phase 1</td>
+                            <td>+ 10 VP</td>
+                        </tr>
+                        <tr>
+                            <td>Phase 2</td>
+                            <td>+ 8 VP</td>
+                        </tr>
+                        <tr>
+                            <td>Phase 3</td>
+                            <td>+ 6 VP</td>
+                        </tr>
+                    </table>
+                </div>
+                <h3 style="margin-top: 15px;">Credits</h3>
+                <p>Designed by <strong>Stefan Feld</strong> and <strong>Christoph Toussaint</strong>.<br>
+                    For more details, visit the <a
+                        href="https://boardgamegeek.com/boardgame/232473/the-castles-of-burgundy-the-dice-game"
+                        target="_blank" style="color:var(--accent); text-decoration: underline;">BoardGameGeek page</a>.
+                </p>
+            </div>
+            <button class="btn danger"
+                onclick="document.getElementById('modal-rules').classList.remove('active'); setTimeout(() => document.getElementById('modal-rules').classList.add('hidden'), 300)"
+                style="margin-top: 20px;">Close</button>
+        </div>
+    </div>
+    <script type="module" src="./src/maps.js?v=1.12"></script>
+    <script type="module" src="./src/state.js?v=1.12"></script>
+    <script type="module" src="./src/engine.js?v=1.12"></script>
+    <script type="module" src="./src/main.js?v=1.12"></script>
+</body>
+
+</html>
