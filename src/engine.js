@@ -164,9 +164,10 @@ export const engine = {
         if (colorCompleted && !state.completedColors[hex.color] && !init) {
             state.completedColors[hex.color] = true;
             // Solo variant extra points
-            const extraPoints = { green: 3, purple: 4, gray: 5, blue: 6, yellow: 7, orange: 8 };
-            let pts = extraPoints[hex.color] || 0;
-            if (state.phase === 3) pts = Math.floor(pts / 2); // lower amount conceptually
+            const extraPointsPhase12 = { purple: 3, gray: 3, blue: 4, orange: 6, green: 3, yellow: 4 };
+            const extraPointsPhase3 = { purple: 2, gray: 1, blue: 2, orange: 3, green: 1, yellow: 2 };
+            let pts = state.phase === 3 ? extraPointsPhase3[hex.color] : extraPointsPhase12[hex.color];
+            pts = pts || 0;
             state.score += pts;
             state.scoreEvents.unshift({ msg: `Completed ${hex.color} hexes`, pts });
             state.messages.push(`🏆 All ${hex.color} Hexes Completed! +${pts} VP`);

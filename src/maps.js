@@ -22,13 +22,13 @@ export const mapBData = [
 ];
 
 export const mapCData = [
-  ['orange', 'green_purple', 'purple', 'orange'],
-  ['gray', 'gray', 'green_gray', 'orange', 'orange'],
-  ['yellow', 'orange', 'green_blue', 'blue', 'yellow', 'yellow'],
-  ['yellow', 'yellow', 'blue', 'orange', 'blue', 'orange', 'orange'],
-  ['green_gray', 'purple', 'blue', 'blue', 'gray', 'gray'],
-  ['green_orange', 'orange', 'orange', 'yellow', 'yellow'],
-  ['orange', 'orange', 'green_purple', 'purple']
+  ['orange', 'green_silver', 'purple', 'purple'],
+  ['gray', 'gray', 'orange', 'orange', 'orange'],
+  ['orange', 'green_commodity', 'yellow', 'blue', 'purple', 'yellow'],
+  ['yellow', 'orange', 'yellow', 'blue', 'orange', 'blue', 'blue'],
+  ['yellow', 'purple', 'green_worker', 'orange', 'orange', 'green_monk'],
+  ['purple', 'gray', 'gray', 'yellow', 'purple'],
+  ['blue', 'blue', 'yellow', 'purple']
 ];
 
 export const mapDData = [

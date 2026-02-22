@@ -9,7 +9,7 @@ const screens = {
 
 const i18n = {
     en: {
-        uiTitle: "The Castles of Burgundy: The Dice Game <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.13</span>",
+        uiTitle: "The Castles of Burgundy: The Dice Game <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.16</span>",
         menu: "☰ Menu",
         historyBtn: "Scores",
         rulesBtn: "Rules",
@@ -39,7 +39,7 @@ const i18n = {
         areaScoreTotal: "Total"
     },
     pt: {
-        uiTitle: "The Castles of Burgundy: O Jogo de Dados <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.13</span>",
+        uiTitle: "The Castles of Burgundy: O Jogo de Dados <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.16</span>",
         menu: "☰ Menu",
         historyBtn: "Pontuações",
         rulesBtn: "Regras",
@@ -169,6 +169,8 @@ function renderAll(forceMapRedraw = false) {
         document.getElementById('action-hint').style.color = "var(--accent)";
         document.getElementById('btn-end-turn').disabled = true;
         document.getElementById('btn-undo').disabled = true;
+    } else {
+        document.getElementById('btn-end-turn').disabled = !state.startHexChosen;
     }
 }
 
@@ -312,8 +314,9 @@ function renderSidebar() {
 
     colors.forEach(c => {
         const isDone = state.completedColors[c];
-        let pts = [3, 4, 5, 6, 7, 8][colors.indexOf(c)];
-        if (state.phase === 3) pts = Math.floor(pts / 2);
+        const extraPointsPhase12 = { purple: 3, gray: 3, blue: 4, orange: 6, green: 3, yellow: 4 };
+        const extraPointsPhase3 = { purple: 2, gray: 1, blue: 2, orange: 3, green: 1, yellow: 2 };
+        let pts = state.phase === 3 ? extraPointsPhase3[c] : extraPointsPhase12[c];
 
         // Map colors to i18n keys
         const cMap = { orange: 'city', blue: 'river', green: 'castle', yellow: 'pasture', purple: 'monastery', gray: 'mine' };
@@ -429,11 +432,24 @@ function renderBoard() {
     const w = Math.sqrt(3) * SIZE;
     const h = 2 * SIZE;
 
+    // To place scores, find a centerish tile for each color
+    let colorCenters = {};
+
     state.map.hexes.forEach(hex => {
         const x = w * (hex.q + hex.r / 2);
         const y = h * 0.75 * hex.r;
         if (x < minX) minX = x; if (x > maxX) maxX = x;
         if (y < minY) minY = y; if (y > maxY) maxY = y;
+
+        if (!colorCenters[hex.color]) colorCenters[hex.color] = { x: 0, y: 0, count: 0 };
+        colorCenters[hex.color].x += x;
+        colorCenters[hex.color].y += y;
+        colorCenters[hex.color].count++;
+    });
+
+    Object.keys(colorCenters).forEach(c => {
+        colorCenters[c].x /= colorCenters[c].count;
+        colorCenters[c].y /= colorCenters[c].count;
     });
 
     const vbMinX = minX - w;
@@ -485,11 +501,41 @@ function renderBoard() {
             const iconColor = colorsMap[hex.castleBonus] || hex.castleBonus;
 
             // Draw a subtle border circle and text symbol
-            svg += `<circle cx="${cx}" cy="${cy + 14}" r="11" fill="var(--color-${iconColor})" stroke="white" stroke-width="1.5" />`;
-            svg += `<text x="${cx}" y="${cy + 14}" font-size="14px" fill="white" font-weight="bold" text-anchor="middle" dominant-baseline="central">${symbol}</text>`;
+            svg += `<circle cx="${cx}" cy="${cy + 12}" r="14" fill="var(--color-${iconColor})" stroke="white" stroke-width="2" />`;
+            svg += `<text x="${cx}" y="${cy + 12}" font-size="18px" fill="white" font-weight="bold" text-anchor="middle" dominant-baseline="central">${symbol}</text>`;
         }
 
         // Draw area borders slightly bolder? (Omitted for simplicity, rely on colors)
+    });
+
+    // Draw the overall color completion bonus VP somewhere visually appropriate
+    // We already calculated the avg center per color. Let's just draw the score there, offset slightly if needed
+    const extraPointsPhase12 = { purple: 3, gray: 3, blue: 4, orange: 6, green: 3, yellow: 4 };
+    const extraPointsPhase3 = { purple: 2, gray: 1, blue: 2, orange: 3, green: 1, yellow: 2 };
+
+    Object.keys(colorCenters).forEach(c => {
+        if (state.completedColors[c]) return; // Don't draw if already claimed
+        // find a hex of this color that is closest to the avg center so it sits on a tile
+        let bestHex = null;
+        let bestDist = Infinity;
+        state.map.hexes.filter(h => h.color === c).forEach(h => {
+            const cx = w * (h.q + h.r / 2);
+            const cy = h * 0.75 * h.r;
+            const dist = Math.pow(cx - colorCenters[c].x, 2) + Math.pow(cy - colorCenters[c].y, 2);
+            if (dist < bestDist) {
+                bestDist = dist;
+                bestHex = { x: cx, y: cy };
+            }
+        });
+
+        if (bestHex) {
+            const p12 = extraPointsPhase12[c];
+            const p3 = extraPointsPhase3[c];
+            const bonusText = `+${p12} | +${p3}`;
+            // Add a subtle dark background pill for the text to pop out on any color
+            svg += `<rect x="${bestHex.x - 35}" y="${bestHex.y - 36}" width="70" height="22" rx="10" fill="black" opacity="0.6" style="pointer-events:none;"/>`;
+            svg += `<text x="${bestHex.x}" y="${bestHex.y - 25}" font-size="14px" fill="#ffeb3b" font-weight="bold" text-anchor="middle" dominant-baseline="central" style="pointer-events:none; text-shadow: 1px 1px 2px black;">${bonusText}</text>`;
+        }
     });
 
     svg += `</svg>`;
