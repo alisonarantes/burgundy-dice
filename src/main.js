@@ -9,8 +9,8 @@ const screens = {
 
 const i18n = {
     en: {
-        uiTitle: "The Castles of Burgundy: The Dice Game <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.19</span>",
-        menu: "☰ Menu",
+        uiTitle: "The Castles of Burgundy: The Dice Game <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.22</span>",
+        menu: "☰",
         historyBtn: "Scores",
         rulesBtn: "Rules",
         newgameBtn: "New Game",
@@ -39,8 +39,8 @@ const i18n = {
         areaScoreTotal: "Total"
     },
     pt: {
-        uiTitle: "The Castles of Burgundy: O Jogo de Dados <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.19</span>",
-        menu: "☰ Menu",
+        uiTitle: "The Castles of Burgundy: O Jogo de Dados <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.22</span>",
+        menu: "☰",
         historyBtn: "Pontuações",
         rulesBtn: "Regras",
         newgameBtn: "Novo Jogo",
@@ -165,7 +165,24 @@ function renderAll(forceMapRedraw = false) {
     }
 
     if (state.phase > 3) {
-        document.getElementById('action-hint').innerText = "Game Over! Final Score: " + state.score;
+        let evalMessageEn = "";
+        let evalMessagePt = "";
+        if (state.score >= 70) {
+            evalMessageEn = "Incredible!";
+            evalMessagePt = "Inacreditável!";
+        } else if (state.score >= 60) {
+            evalMessageEn = "Excellent!";
+            evalMessagePt = "Excelente!";
+        } else if (state.score > 50) {
+            evalMessageEn = "Well done.";
+            evalMessagePt = "Muito bem.";
+        }
+
+        const msgText = state.language === 'en'
+            ? `Game Over! Final Score: ${state.score}. ${evalMessageEn}`
+            : `Fim de Jogo! Pontuação Final: ${state.score}. ${evalMessagePt}`;
+
+        document.getElementById('action-hint').innerText = msgText;
         document.getElementById('action-hint').style.color = "var(--accent)";
         document.getElementById('btn-end-turn').disabled = true;
         document.getElementById('btn-undo').disabled = true;
