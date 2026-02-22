@@ -33,14 +33,14 @@
         <div id="top-nav"
             style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; position: relative; z-index: 100;">
             <h2 id="ui-title"
-                style="margin: 0; font-size: 1.4rem; color: var(--text-main); font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                style="margin: 0; font-size: clamp(0.9rem, 3.5vw, 1.4rem); color: var(--text-main); font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 The Castles of Burgundy: The Dice Game <span
-                    style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">v1.19</span>
+                    style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">v1.22</span>
             </h2>
             <div class=" dropdown">
                 <button id="btn-menu" class="btn small"
-                    style="background: rgba(0,0,0,0.1); color: var(--text-main);"><span id="txt-menu">☰
-                        Menu</span></button>
+                    style="background: rgba(0,0,0,0.1); color: var(--text-main); font-size: 1.2rem;"><span
+                        id="txt-menu">☰</span></button>
                 <div id="dropdown-menu" class="dropdown-content">
                     <button id="btn-lang-toggle" class="btn small" style="background: var(--accent); color: white;">🇺🇸
                         English / 🇧🇷 Português</button>
@@ -307,10 +307,10 @@
                 style="margin-top: 20px;">Close</button>
         </div>
     </div>
-    <script type="module" src="./src/maps.js?v=1.19"></script>
-    <script type="module" src="./src/state.js?v=1.19"></script>
-    <script type="module" src="./src/engine.js?v=1.19"></script>
-    <script type="module" src="./src/main.js?v=1.19"></script>
+    <script type="module" src="./src/maps.js?v=1.22"></script>
+    <script type="module" src="./src/state.js?v=1.22"></script>
+    <script type="module" src="./src/engine.js?v=1.22"></script>
+    <script type="module" src="./src/main.js?v=1.22"></script>
 </body>
 
 </html>

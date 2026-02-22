@@ -149,6 +149,7 @@ h3 {
 
 .map-cards {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 2rem;
   justify-content: center;
@@ -260,9 +261,10 @@ h3 {
 .game-container {
   display: flex;
   height: calc(100vh - 120px);
-  min-height: 600px;
+  min-height: 480px;
+  /* lower min-height to fit smaller laptops */
   padding: 1rem 2rem;
-  gap: 2rem;
+  gap: 1rem;
   max-width: 1600px;
   margin: 0 auto;
 }
@@ -301,6 +303,8 @@ h3 {
   position: relative;
   height: 100%;
   min-height: 0;
+  max-height: 100%;
+  /* Ensure map shrinks if needed */
 }
 
 @media (max-width: 1024px) {
@@ -313,11 +317,16 @@ h3 {
 }
 
 .sidebar {
-  width: 320px;
+  width: 300px;
+  /* slightly smaller width to fit nicely */
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  height: 100%;
+  /* stretch to match map container height */
+  justify-content: space-between;
+  /* push elements to top and bottom to equal height */
 }
 
 @media (max-width: 1024px) {
@@ -610,6 +619,7 @@ svg {
   width: 100%;
   text-align: left;
 }
+
 /* Tooltip Wrapper */
 .tooltip-wrapper {
   position: relative;
@@ -631,7 +641,7 @@ svg {
   margin-left: -100px;
   opacity: 0;
   transition: opacity 0.3s;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   font-size: 0.85rem;
   max-height: 250px;
   overflow-y: auto;
@@ -655,30 +665,38 @@ svg {
 
 @media (max-width: 600px) {
   #ui-title {
-    font-size: 1.1rem !important;
+    font-size: clamp(0.9rem, 4vw, 1.2rem) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
+
   #ui-title span {
     font-size: 0.7rem !important;
     margin-left: 5px !important;
-    display: inline-block;
   }
+
   #top-nav {
     padding: 10px !important;
   }
+
   .glass-header {
     flex-wrap: wrap;
     justify-content: space-between;
     padding: 0.5rem 1rem;
     gap: 10px;
   }
+
   .stat-group.resources {
     width: 100%;
     justify-content: center;
     gap: 0.8rem;
   }
+
   .res-btn {
     padding: 0.4rem 0.6rem;
   }
+
   .res-btn .icon {
     font-size: 1rem;
   }
