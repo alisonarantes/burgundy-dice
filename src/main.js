@@ -9,7 +9,7 @@ const screens = {
 
 const i18n = {
     en: {
-        uiTitle: "The Castles of Burgundy: The Dice Game <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.16</span>",
+        uiTitle: "The Castles of Burgundy: The Dice Game <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.19</span>",
         menu: "☰ Menu",
         historyBtn: "Scores",
         rulesBtn: "Rules",
@@ -39,7 +39,7 @@ const i18n = {
         areaScoreTotal: "Total"
     },
     pt: {
-        uiTitle: "The Castles of Burgundy: O Jogo de Dados <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.16</span>",
+        uiTitle: "The Castles of Burgundy: O Jogo de Dados <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.19</span>",
         menu: "☰ Menu",
         historyBtn: "Pontuações",
         rulesBtn: "Regras",
@@ -323,7 +323,7 @@ function renderSidebar() {
 
         const div = document.createElement('div');
         div.className = `track-item ${isDone ? 'done' : ''}`;
-        div.innerHTML = `<span style="color:var(--color-${c});font-weight:bold;">${t(cMap[c])}</span> <span>${pts} VP</span>`;
+        div.innerHTML = `<span style="color:var(--color-${c});font-weight:bold;">${t(cMap[c])}</span> <span>${pts}</span>`;
         trackContainer.appendChild(div);
     });
 
