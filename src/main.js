@@ -219,8 +219,8 @@ function updatePartnerHighlights() {
 }
 
 function renderHeader() {
-    document.getElementById('val-phase').innerText = state.phase;
-    document.getElementById('val-turn').innerText = state.turn + ' / 8';
+    document.getElementById('val-phase').innerText = state.phase > 3 ? 3 : state.phase;
+    document.getElementById('val-turn').innerText = (state.phase > 3 ? 8 : state.turn) + ' / 8';
     document.getElementById('val-score').innerText = state.score;
 
     document.getElementById('val-workers').innerText = state.resources.workers;
