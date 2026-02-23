@@ -14,6 +14,7 @@ export const engine = {
         state.dice.hourglass = hourglassOptions[Math.floor(Math.random() * hourglassOptions.length)];
 
         state.diceAvailable = { number1: true, number2: true, color1: true, color2: true };
+        state.bonusUsedThisTurn = false;
         state.workerUsedThisTurn = false;
         state.monkUsedThisTurn = false;
         state.silverUsedThisTurn = false;
@@ -41,32 +42,35 @@ export const engine = {
     },
 
     useMonk(targetColorIdx, desiredColor) {
-        if (state.resources.monks <= 0 || state.monkUsedThisTurn) return false;
+        if (state.resources.monks <= 0 || state.bonusUsedThisTurn) return false;
         snapshot();
         state.resources.monks--;
         if (targetColorIdx === 1) state.dice.color1 = desiredColor;
         if (targetColorIdx === 2) state.dice.color2 = desiredColor;
         state.monkUsedThisTurn = true;
+        state.bonusUsedThisTurn = true;
         saveState();
         return true;
     },
 
     useWorker(targetNumIdx, desiredNumber) {
-        if (state.resources.workers <= 0 || state.workerUsedThisTurn) return false;
+        if (state.resources.workers <= 0 || state.bonusUsedThisTurn) return false;
         snapshot();
         state.resources.workers--;
         if (targetNumIdx === 1) state.dice.number1 = desiredNumber;
         if (targetNumIdx === 2) state.dice.number2 = desiredNumber;
         state.workerUsedThisTurn = true;
+        state.bonusUsedThisTurn = true;
         saveState();
         return true;
     },
 
     useSilver() {
-        if (state.resources.silver <= 0 || state.silverUsedThisTurn) return false;
+        if (state.resources.silver <= 0 || state.bonusUsedThisTurn) return false;
         snapshot();
         state.resources.silver--;
         state.silverUsedThisTurn = true;
+        state.bonusUsedThisTurn = true;
         saveState();
         // UI needs to allow picking the unused dice combination
         return true;
