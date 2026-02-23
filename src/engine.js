@@ -14,7 +14,8 @@ export const engine = {
         state.dice.hourglass = hourglassOptions[Math.floor(Math.random() * hourglassOptions.length)];
 
         state.diceAvailable = { number1: true, number2: true, color1: true, color2: true };
-        state.bonusUsedThisTurn = false;
+        state.workerUsedThisTurn = false;
+        state.monkUsedThisTurn = false;
         state.silverUsedThisTurn = false;
         state.placedThisTurn = 0;
 
@@ -40,21 +41,23 @@ export const engine = {
     },
 
     useMonk(targetColorIdx, desiredColor) {
-        if (state.resources.monks <= 0) return false;
+        if (state.resources.monks <= 0 || state.monkUsedThisTurn) return false;
         snapshot();
         state.resources.monks--;
         if (targetColorIdx === 1) state.dice.color1 = desiredColor;
         if (targetColorIdx === 2) state.dice.color2 = desiredColor;
+        state.monkUsedThisTurn = true;
         saveState();
         return true;
     },
 
     useWorker(targetNumIdx, desiredNumber) {
-        if (state.resources.workers <= 0) return false;
+        if (state.resources.workers <= 0 || state.workerUsedThisTurn) return false;
         snapshot();
         state.resources.workers--;
         if (targetNumIdx === 1) state.dice.number1 = desiredNumber;
         if (targetNumIdx === 2) state.dice.number2 = desiredNumber;
+        state.workerUsedThisTurn = true;
         saveState();
         return true;
     },
@@ -201,6 +204,17 @@ export const engine = {
         if (hex.color === 'yellow') msg = `✨ Pasture Area Completed! Size ${size} grants double VP (+${totalPts} VP).`;
 
         state.messages.push(msg);
+
+        if (hex.color === 'purple') {
+            state.resources.monks++;
+            state.messages.push(`✝ Monastery Bonus: +1 Monk`);
+        } else if (hex.color === 'blue') {
+            state.resources.commodities++;
+            state.messages.push(`📦 River Bonus: +1 Commodity`);
+        } else if (hex.color === 'orange') {
+            state.resources.workers++;
+            state.messages.push(`⚒ City Bonus: +1 Worker`);
+        }
 
         // Area Completion specific bonuses were moved up to markHex so they trigger on init too
     },
