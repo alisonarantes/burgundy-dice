@@ -9,9 +9,11 @@ const screens = {
 
 const i18n = {
     en: {
-        uiTitle: "The Castles of Burgundy: The Dice Game <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.24</span>",
+        uiTitle: "The Castles of Burgundy: The Dice Game <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.25</span>",
         menu: "☰",
         historyBtn: "Scores",
+        scoreLogBtn: "Match Log",
+        scoreLogTitle: "Match Score Log 🏆",
         rulesBtn: "Rules",
         newgameBtn: "New Game",
         progressTitle: "Completion Progress",
@@ -39,9 +41,11 @@ const i18n = {
         areaScoreTotal: "Total"
     },
     pt: {
-        uiTitle: "The Castles of Burgundy: O Jogo de Dados <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.24</span>",
+        uiTitle: "The Castles of Burgundy: O Jogo de Dados <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.25</span>",
         menu: "☰",
         historyBtn: "Pontuações",
+        scoreLogBtn: "Histórico da Partida",
+        scoreLogTitle: "Histórico da Partida 🏆",
         rulesBtn: "Regras",
         newgameBtn: "Novo Jogo",
         progressTitle: "Progresso das Áreas",
@@ -78,6 +82,10 @@ function applyTranslations() {
     document.getElementById('ui-title').innerHTML = t('uiTitle');
     document.getElementById('txt-menu').innerText = t('menu');
     document.getElementById('txt-history-btn').innerText = t('historyBtn');
+    document.getElementById('txt-score-log-btn').innerText = t('scoreLogBtn');
+    if (document.getElementById('txt-score-log-title')) {
+        document.getElementById('txt-score-log-title').innerText = t('scoreLogTitle');
+    }
     document.getElementById('txt-rules-btn').innerText = t('rulesBtn');
     document.getElementById('txt-newgame-btn').innerText = t('newgameBtn');
     document.getElementById('txt-progress-title').innerText = t('progressTitle');
@@ -785,6 +793,25 @@ document.getElementById('btn-history').addEventListener('click', () => {
         sorted.forEach((s, idx) => {
             content.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #ccc;">
                 <strong>#${idx + 1}</strong> <span>${s.score} VP (Map ${s.map || '?'})</span> <span><small>${s.date}</small></span>
+            </div>`;
+        });
+    }
+    modal.classList.remove('hidden');
+    modal.classList.add('active');
+});
+
+document.getElementById('btn-score-log').addEventListener('click', () => {
+    const modal = document.getElementById('modal-score-log');
+    const content = document.getElementById('score-log-list');
+    content.innerHTML = '';
+
+    if (!state.scoreEvents || state.scoreEvents.length === 0) {
+        content.innerHTML = `<p>${state.language === 'en' ? 'No points earned yet!' : 'Nenhum ponto marcado ainda.'}</p>`;
+    } else {
+        state.scoreEvents.forEach((ev, idx) => {
+            content.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom: 8px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">
+                <span style="opacity:0.9">${ev.msg}</span>
+                <span style="color:#10b981;font-weight:bold;">+${ev.pts}</span>
             </div>`;
         });
     }
