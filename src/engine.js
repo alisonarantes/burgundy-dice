@@ -141,7 +141,7 @@ export const engine = {
 
         const completed = areaHexes.every(h => h.val !== null);
 
-        if (completed) {
+        if (completed && !init) {
             this.awardAreaBonus(hex, areaHexes.length, init);
         }
 
@@ -184,6 +184,9 @@ export const engine = {
 
         if (!init) {
             saveState();
+        } else {
+            // If it is init, we want to save state right away here too as well as when the game starts rollDice
+            saveState();
         }
     },
 
@@ -208,7 +211,6 @@ export const engine = {
 
         let msg = `✨ Area Completed! Size ${size} grants +${totalPts} VP.`;
         if (hex.color === 'yellow') msg = `✨ Pasture Area Completed! Size ${size} grants double VP (+${totalPts} VP).`;
-        if (init) msg = `✨ Area Completed! Size ${size} grants +${totalPts} VP (Starting Castle).`;
 
         state.messages.push(msg);
 
