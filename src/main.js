@@ -9,7 +9,7 @@ const screens = {
 
 const i18n = {
     en: {
-        uiTitle: "The Castles of Burgundy: The Dice Game <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.26</span>",
+        uiTitle: "The Castles of Burgundy: The Dice Game <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.27</span>",
         menu: "☰",
         historyBtn: "Scores",
         scoreLogBtn: "Match Log",
@@ -41,7 +41,7 @@ const i18n = {
         areaScoreTotal: "Total"
     },
     pt: {
-        uiTitle: "The Castles of Burgundy: O Jogo de Dados <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.26</span>",
+        uiTitle: "The Castles of Burgundy: O Jogo de Dados <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.27</span>",
         menu: "☰",
         historyBtn: "Pontuações",
         scoreLogBtn: "Histórico da Partida",

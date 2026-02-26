@@ -223,6 +223,9 @@ export const engine = {
         } else if (hex.color === 'orange') {
             state.resources.workers++;
             state.messages.push(`⚒ City Bonus: +1 Worker`);
+        } else if (hex.color === 'gray') {
+            state.resources.silver++;
+            state.messages.push(`🪙 Mine Bonus: +1 Silver`);
         }
 
         // Area Completion specific bonuses were moved up to markHex so they trigger on init too
