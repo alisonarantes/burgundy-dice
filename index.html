@@ -35,7 +35,7 @@
             <h2 id="ui-title"
                 style="margin: 0; font-size: clamp(0.9rem, 3.5vw, 1.4rem); color: var(--text-main); font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 The Castles of Burgundy: The Dice Game <span
-                    style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">v1.24</span>
+                    style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">v1.25</span>
             </h2>
             <div class=" dropdown">
                 <button id="btn-menu" class="btn small"
@@ -46,6 +46,8 @@
                         English / 🇧🇷 Português</button>
                     <button id="btn-history" class="btn small" style="color: var(--text-main);"><span
                             id="txt-history-btn">Scores</span></button>
+                    <button id="btn-score-log" class="btn small" style="color: var(--text-main);"><span
+                            id="txt-score-log-btn">Score Log</span></button>
                     <button id="btn-rules" class="btn small" style="color: var(--text-main);"><span
                             id="txt-rules-btn">Rules</span></button>
                     <button id="btn-new-game" class="btn small danger" style="margin-top: 10px;"><span
@@ -208,6 +210,19 @@
         </div>
     </div>
 
+    <!-- Match Score Log Modal -->
+    <div id="modal-score-log" class="overlay hidden">
+        <div class="glass-panel small text-center">
+            <h3 id="txt-score-log-title">Match Score Log 🏆</h3>
+            <div id="score-log-list"
+                style="margin: 15px 0; max-height: 300px; overflow-y: auto; text-align: left; padding-right: 10px;">
+                <!-- Filled dynamically by main.js -->
+            </div>
+            <button class="btn primary"
+                onclick="document.getElementById('modal-score-log').classList.remove('active'); setTimeout(() => document.getElementById('modal-score-log').classList.add('hidden'), 300)">Close</button>
+        </div>
+    </div>
+
     <!-- Rules Modal -->
     <div id="modal-rules" class="overlay hidden">
         <div class="glass-panel text-left" style="max-height: 80vh; overflow-y: auto; padding: 30px;">
@@ -317,10 +332,10 @@
                 style="margin-top: 20px;">Close</button>
         </div>
     </div>
-    <script type="module" src="./src/maps.js?v=1.24"></script>
-    <script type="module" src="./src/state.js?v=1.24"></script>
-    <script type="module" src="./src/engine.js?v=1.24"></script>
-    <script type="module" src="./src/main.js?v=1.24"></script>
+    <script type="module" src="./src/maps.js?v=1.25"></script>
+    <script type="module" src="./src/state.js?v=1.25"></script>
+    <script type="module" src="./src/engine.js?v=1.25"></script>
+    <script type="module" src="./src/main.js?v=1.25"></script>
 </body>
 
 </html>
