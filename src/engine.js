@@ -141,8 +141,8 @@ export const engine = {
 
         const completed = areaHexes.every(h => h.val !== null);
 
-        if (completed && !init) {
-            this.awardAreaBonus(hex, areaHexes.length);
+        if (completed) {
+            this.awardAreaBonus(hex, areaHexes.length, init);
         }
 
         if (hex.color === 'green') {
@@ -160,7 +160,9 @@ export const engine = {
                 state.scoreEvents.unshift({ msg: `Castle Bonus (${won})`, pts: 1 });
                 state.messages.push(`🏰 Castle Bonus: +1 VP & +1 ${won}`);
             } else {
-                state.messages.push(`🏰 Starting Castle Bonus: +1 ${won}`);
+                state.score += 1;
+                state.scoreEvents.unshift({ msg: `Starting Castle Bonus (${won})`, pts: 1 });
+                state.messages.push(`🏰 Starting Castle Bonus: +1 VP & +1 ${won}`);
             }
         }
 
@@ -185,7 +187,7 @@ export const engine = {
         }
     },
 
-    awardAreaBonus(hex, size) {
+    awardAreaBonus(hex, size, init = false) {
         const scoreTable = {
             1: [1, 1, 1],
             2: [4, 3, 2],
@@ -206,6 +208,7 @@ export const engine = {
 
         let msg = `✨ Area Completed! Size ${size} grants +${totalPts} VP.`;
         if (hex.color === 'yellow') msg = `✨ Pasture Area Completed! Size ${size} grants double VP (+${totalPts} VP).`;
+        if (init) msg = `✨ Area Completed! Size ${size} grants +${totalPts} VP (Starting Castle).`;
 
         state.messages.push(msg);
 
