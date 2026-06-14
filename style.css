@@ -731,3 +731,64 @@ svg {
     font-size: 1rem;
   }
 }
+
+/* Toast System - Top Right Corner */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.toast {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  padding: 12px 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+  color: #102a43;
+  font-weight: 600;
+  animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  min-width: 250px;
+  max-width: 350px;
+  word-wrap: break-word;
+  border-left: 4px solid var(--accent);
+  font-size: 0.95rem;
+}
+
+@keyframes toastSlideIn {
+  from {
+    transform: translateX(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Commodity Pulse Blink */
+@keyframes pulse-blink {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7);
+    background: rgba(37, 99, 235, 0.1);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+    background: rgba(37, 99, 235, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+    background: rgba(37, 99, 235, 0.1);
+  }
+}
+
+.blink-active {
+  animation: pulse-blink 1.5s infinite;
+  border-color: var(--color-blue) !important;
+  font-weight: bold;
+}

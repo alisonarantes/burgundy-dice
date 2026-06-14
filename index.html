@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Burgundy Dice Game</title>
+    <title>Burgundy Dice Solo</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css" />
 </head>
@@ -13,7 +13,7 @@
     <!-- Initial Overlay -->
     <div id="start-screen" class="overlay active">
         <div class="glass-panel text-center">
-            <h1 class="title-main">Castles of Burgundy</h1>
+            <h1 class="title-main">Burgundy Dice Solo</h1>
             <p class="subtitle">The Dice Game (Solo Experience)</p>
             <div class="map-selection">
                 <h2 id="txt-select-duchy">Select your Map to start</h2>
@@ -34,8 +34,8 @@
             style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; position: relative; z-index: 100;">
             <h2 id="ui-title"
                 style="margin: 0; font-size: clamp(0.9rem, 3.5vw, 1.4rem); color: var(--text-main); font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                The Castles of Burgundy: The Dice Game <span
-                    style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">v1.28</span>
+                Burgundy Dice Solo <span
+                    style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">v1.29</span>
             </h2>
             <div class=" dropdown">
                 <button id="btn-menu" class="btn small"
@@ -63,13 +63,13 @@
         <!-- Top Bar: Scores & Resources -->
         <header class="glass-header">
             <div class="stat-group">
-                <div class="stat"><span class="label">Phase:</span> <span id="val-phase" class="val">1</span></div>
-                <div class="stat"><span class="label">Turn:</span> <span id="val-turn" class="val">1</span></div>
+                <div class="stat"><span class="label" id="lbl-phase">Phase:</span> <span id="val-phase" class="val">1</span></div>
+                <div class="stat"><span class="label" id="lbl-turn">Turn:</span> <span id="val-turn" class="val">1</span></div>
             </div>
 
             <div class="stat-group score-display">
                 <div class="stat tooltip-wrapper">
-                    <span class="label">Score</span>
+                    <span class="label" id="lbl-score">Score</span>
                     <span id="val-score" class="val highlight" style="cursor:help;">0</span>
                     <div class="tooltip-content" id="score-history-tooltip">
                         <!-- Filled by JS -->
@@ -78,14 +78,29 @@
             </div>
 
             <div class="stat-group resources">
-                <button class="res-btn" id="btn-worker" title="Worker (+1/-1 to Die)"><span class="icon worker">⚒</span>
+                <button class="res-btn" id="btn-worker" title="Worker Silhouette (+1/-1 to Die)">
+                    <svg viewBox="0 0 24 24" width="18" height="18" style="fill: var(--color-orange); vertical-align: middle; margin-right: 4px;">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
                     <span id="val-workers">0</span></button>
-                <button class="res-btn" id="btn-monk" title="Monk (Change Die Color)"><span class="icon monk">✝</span>
+                <button class="res-btn" id="btn-monk" title="Monk (Change Die Color)">
+                    <svg viewBox="0 0 24 24" width="18" height="18" style="fill: var(--color-purple); vertical-align: middle; margin-right: 4px;">
+                        <path d="M19 10.5h-5.5V5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v5.5H5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5h5.5V20c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-5.5H19c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z"/>
+                    </svg>
                     <span id="val-monks">0</span></button>
-                <button class="res-btn" id="btn-silver" title="Silver (Use Extra Die Combo)"><span
-                        class="icon silver">🪙</span> <span id="val-silver">0</span></button>
-                <button class="res-btn" id="btn-commodity" title="Sell Commodities (Requires Double Hourglass)"><span
-                        class="icon commodity">📦</span> <span id="val-commodities">0</span></button>
+                <button class="res-btn" id="btn-silver" title="Silver Bar (Use Extra Die Combo)">
+                    <svg viewBox="0 0 24 24" width="18" height="18" style="vertical-align: middle; margin-right: 4px;">
+                        <path d="M 6 10 L 9 6 h 6 l -3 4 z" fill="#cbd5e1" />
+                        <path d="M 4 16 L 6 10 h 12 l 2 6 z" fill="#64748b" />
+                        <path d="M 6 10 L 9 6 M 15 6 L 18 10 M 18 10 L 20 16" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" />
+                    </svg>
+                    <span id="val-silver">0</span></button>
+                <button class="res-btn" id="btn-commodity" title="Sell Blue Chests (Requires Double Hourglass)">
+                    <svg viewBox="0 0 24 24" width="18" height="18" style="fill: var(--color-blue); vertical-align: middle; margin-right: 4px;">
+                        <path d="M4 6c0-1.7 1.3-3 3-3h10c1.7 0 3 1.3 3 3v3H4V6z"/>
+                        <path d="M4 11v7c0 1.7 1.3 3 3 3h10c1.7 0 3-1.3 3-3v-7H4zm8 5c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                    </svg>
+                    <span id="val-commodities">0</span></button>
             </div>
         </header>
 
@@ -242,7 +257,7 @@
             <div class="rules-content" style="line-height: 1.4; font-size: 0.9em;">
                 <h3>Turn Structure</h3>
                 <p>Roll dice. You can use 1 number die + 1 color die to mark an adjacent valid hex. Or, if you have
-                    Silver, use it to mark the remaining pair.</p>
+                    Silver Bars, use them to mark the remaining pair.</p>
 
                 <h3>Hex Placement Rules</h3>
                 <ul style="text-align: left;">
@@ -252,18 +267,18 @@
                     <li><strong>Mine (Gray)</strong>: Must be 3 or 4.</li>
                     <li><strong>River (Blue)</strong>: Must be 5 or 6.</li>
                     <li><strong>Castle (Green)</strong>: Must match a number of any marked neighbor. Grants instant
-                        bonus: Workers, Monks, Silver, or Commodities depending on its icon.</li>
+                        bonus: Workers, Monks, Silver Bars, or Blue Chests (Commodities) depending on its icon.</li>
                 </ul>
 
                 <h3>Resources & Castles</h3>
-                <p><em>Note: You can use a MAXIMUM OF 1 bonus (Worker, Monk, OR Silver) per turn.</em></p>
+                <p><em>Note: You can use a MAXIMUM OF 1 bonus (Worker, Monk, OR Silver Bar) per turn.</em></p>
                 <ul style="text-align: left;">
-                    <li><strong>Worker (Orange Icon)</strong>: +/- 1 to a number die (wraps 1 to 6).</li>
+                    <li><strong>Worker (Orange Silhouette)</strong>: +/- 1 to a number die (wraps 1 to 6).</li>
                     <li><strong>Monk (Purple Icon)</strong>: Change a color die to any color.</li>
-                    <li><strong>Silver (Gray Icon)</strong>: Grants a second action per turn (allows placing the second
+                    <li><strong>Silver Bar (Gray Icon)</strong>: Grants a second action per turn (allows placing the second
                         pair of dice).</li>
-                    <li><strong>Commodity (Blue Icon)</strong>: Automatically sold when a double hourglass (⏳⏳) is
-                        rolled. Gives 1 Silver and 2 VP per commodity sold.</li>
+                    <li><strong>Blue Chest (Blue Icon)</strong>: Automatically sold when a double hourglass (⏳⏳) is
+                        rolled. Gives 1 Silver Bar and 2 VP per Blue Chest sold.</li>
                 </ul>
 
                 <h3 id="scoring-rules">Scoring & Area Bonuses</h3>
@@ -273,7 +288,7 @@
                     <strong>When the last hex of an area is filled, you gain a Bonus based on its color:</strong>
                     <ul style="text-align: left; margin-bottom: 0;">
                         <li><strong>Orange (City)</strong>: 1 Worker</li>
-                        <li><strong>Blue (River)</strong>: 1 Commodity</li>
+                        <li><strong>Blue (River)</strong>: 1 Blue Chest (Commodity)</li>
                         <li><strong>Purple (Monastery)</strong>: 1 Monk</li>
                         <li><strong>Yellow (Pasture)</strong>: Double VP for the Area!</li>
                     </ul>
@@ -344,10 +359,10 @@
                 style="margin-top: 20px;">Close</button>
         </div>
     </div>
-    <script type="module" src="./src/maps.js?v=1.28"></script>
-    <script type="module" src="./src/state.js?v=1.28"></script>
-    <script type="module" src="./src/engine.js?v=1.28"></script>
-    <script type="module" src="./src/main.js?v=1.28"></script>
+    <script type="module" src="./src/maps.js?v=1.29"></script>
+    <script type="module" src="./src/state.js?v=1.29"></script>
+    <script type="module" src="./src/engine.js?v=1.29"></script>
+    <script type="module" src="./src/main.js?v=1.29"></script>
 </body>
 
 </html>
