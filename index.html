@@ -35,7 +35,7 @@
             <h2 id="ui-title"
                 style="margin: 0; font-size: clamp(0.9rem, 3.5vw, 1.4rem); color: var(--text-main); font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 The Castles of Burgundy: The Dice Game <span
-                    style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">v1.27</span>
+                    style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">v1.28</span>
             </h2>
             <div class=" dropdown">
                 <button id="btn-menu" class="btn small"
@@ -48,6 +48,10 @@
                             id="txt-history-btn">Scores</span></button>
                     <button id="btn-score-log" class="btn small" style="color: var(--text-main);"><span
                             id="txt-score-log-btn">Score Log</span></button>
+                    <button id="btn-progress" class="btn small" style="color: var(--text-main);"><span
+                            id="txt-progress-btn">Completion Progress</span></button>
+                    <button id="btn-area-score" class="btn small" style="color: var(--text-main);"><span
+                            id="txt-area-score-btn">Area Score</span></button>
                     <button id="btn-rules" class="btn small" style="color: var(--text-main);"><span
                             id="txt-rules-btn">Rules</span></button>
                     <button id="btn-new-game" class="btn small danger" style="margin-top: 10px;"><span
@@ -86,29 +90,6 @@
         </header>
 
         <main class="game-container">
-            <!-- Left Sidebar for Guides -->
-            <aside class="left-sidebar">
-                <div class="glass-panel" style="padding: 1rem;">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                        <h3 id="txt-progress-title">Completion Progress</h3>
-                        <button class="btn small"
-                            style="padding: 2px 8px; font-size: 0.8rem; background: var(--accent); color: white;"
-                            onclick="document.getElementById('modal-rules').classList.remove('hidden'); document.getElementById('modal-rules').classList.add('active'); document.getElementById('scoring-rules').scrollIntoView();"><span
-                                id="txt-guide-btn">Guide</span></button>
-                    </div>
-                    <div id="color-track-container" class="track-grid">
-                        <!-- Color tracks dynamically filled -->
-                    </div>
-                </div>
-
-                <div class="glass-panel" style="padding: 1rem; margin-top: 1rem;">
-                    <h3 id="txt-area-score-title" style="margin-bottom: 0.5rem;">Area Score</h3>
-                    <div id="area-score-container" style="font-size: 0.9rem;">
-                        <!-- Dynamically filled table -->
-                    </div>
-                </div>
-            </aside>
 
             <!-- Board Area -->
             <section class="board-section">
@@ -223,6 +204,37 @@
         </div>
     </div>
 
+    <!-- Completion Progress Modal -->
+    <div id="modal-progress" class="overlay hidden">
+        <div class="glass-panel small text-center">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 id="txt-progress-title">Completion Progress</h3>
+                <button class="btn small"
+                    style="padding: 2px 8px; font-size: 0.8rem; background: var(--accent); color: white;"
+                    onclick="document.getElementById('modal-progress').classList.remove('active'); setTimeout(() => document.getElementById('modal-progress').classList.add('hidden'), 300); document.getElementById('modal-rules').classList.remove('hidden'); document.getElementById('modal-rules').classList.add('active'); document.getElementById('scoring-rules').scrollIntoView();">
+                    <span id="txt-guide-btn">Guide</span>
+                </button>
+            </div>
+            <div id="color-track-container" class="track-grid" style="margin-bottom: 15px;">
+                <!-- Color tracks dynamically filled -->
+            </div>
+            <button class="btn primary" style="width: 100%;"
+                onclick="document.getElementById('modal-progress').classList.remove('active'); setTimeout(() => document.getElementById('modal-progress').classList.add('hidden'), 300)">Close</button>
+        </div>
+    </div>
+
+    <!-- Area Score Modal -->
+    <div id="modal-area-score" class="overlay hidden">
+        <div class="glass-panel small text-center">
+            <h3 id="txt-area-score-title" style="margin-bottom: 1rem;">Area Score</h3>
+            <div id="area-score-container" style="font-size: 0.9rem; margin-bottom: 15px;">
+                <!-- Dynamically filled table -->
+            </div>
+            <button class="btn primary" style="width: 100%;"
+                onclick="document.getElementById('modal-area-score').classList.remove('active'); setTimeout(() => document.getElementById('modal-area-score').classList.add('hidden'), 300)">Close</button>
+        </div>
+    </div>
+
     <!-- Rules Modal -->
     <div id="modal-rules" class="overlay hidden">
         <div class="glass-panel text-left" style="max-height: 80vh; overflow-y: auto; padding: 30px;">
@@ -332,10 +344,10 @@
                 style="margin-top: 20px;">Close</button>
         </div>
     </div>
-    <script type="module" src="./src/maps.js?v=1.26"></script>
-    <script type="module" src="./src/state.js?v=1.26"></script>
-    <script type="module" src="./src/engine.js?v=1.26"></script>
-    <script type="module" src="./src/main.js?v=1.26"></script>
+    <script type="module" src="./src/maps.js?v=1.28"></script>
+    <script type="module" src="./src/state.js?v=1.28"></script>
+    <script type="module" src="./src/engine.js?v=1.28"></script>
+    <script type="module" src="./src/main.js?v=1.28"></script>
 </body>
 
 </html>
