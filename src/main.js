@@ -9,7 +9,7 @@ const screens = {
 
 const i18n = {
     en: {
-        uiTitle: "The Castles of Burgundy: The Dice Game <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.27</span>",
+        uiTitle: "The Castles of Burgundy: The Dice Game <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.28</span>",
         menu: "☰",
         historyBtn: "Scores",
         scoreLogBtn: "Match Log",
@@ -41,7 +41,7 @@ const i18n = {
         areaScoreTotal: "Total"
     },
     pt: {
-        uiTitle: "The Castles of Burgundy: O Jogo de Dados <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.27</span>",
+        uiTitle: "The Castles of Burgundy: O Jogo de Dados <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.28</span>",
         menu: "☰",
         historyBtn: "Pontuações",
         scoreLogBtn: "Histórico da Partida",
@@ -86,6 +86,10 @@ function applyTranslations() {
     if (document.getElementById('txt-score-log-title')) {
         document.getElementById('txt-score-log-title').innerText = t('scoreLogTitle');
     }
+    const progressBtn = document.getElementById('txt-progress-btn');
+    if (progressBtn) progressBtn.innerText = t('progressTitle');
+    const areaScoreBtn = document.getElementById('txt-area-score-btn');
+    if (areaScoreBtn) areaScoreBtn.innerText = t('areaScoreTitle');
     document.getElementById('txt-rules-btn').innerText = t('rulesBtn');
     document.getElementById('txt-newgame-btn').innerText = t('newgameBtn');
     document.getElementById('txt-progress-title').innerText = t('progressTitle');
@@ -815,6 +819,18 @@ document.getElementById('btn-score-log').addEventListener('click', () => {
             </div>`;
         });
     }
+    modal.classList.remove('hidden');
+    modal.classList.add('active');
+});
+
+document.getElementById('btn-progress').addEventListener('click', () => {
+    const modal = document.getElementById('modal-progress');
+    modal.classList.remove('hidden');
+    modal.classList.add('active');
+});
+
+document.getElementById('btn-area-score').addEventListener('click', () => {
+    const modal = document.getElementById('modal-area-score');
     modal.classList.remove('hidden');
     modal.classList.add('active');
 });
