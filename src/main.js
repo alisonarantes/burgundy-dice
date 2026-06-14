@@ -9,7 +9,7 @@ const screens = {
 
 const i18n = {
     en: {
-        uiTitle: "The Castles of Burgundy: The Dice Game <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.28</span>",
+        uiTitle: "Burgundy Dice Solo <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.29</span>",
         menu: "☰",
         historyBtn: "Scores",
         scoreLogBtn: "Match Log",
@@ -38,10 +38,13 @@ const i18n = {
         areaScoreSize: "Size",
         areaScoreBase: "Base",
         areaScorePhase: "Phase",
-        areaScoreTotal: "Total"
+        areaScoreTotal: "Total",
+        phaseLabel: "Phase:",
+        turnLabel: "Turn:",
+        scoreLabel: "Score"
     },
     pt: {
-        uiTitle: "The Castles of Burgundy: O Jogo de Dados <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.28</span>",
+        uiTitle: "Burgundy Dice Solo <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.29</span>",
         menu: "☰",
         historyBtn: "Pontuações",
         scoreLogBtn: "Histórico da Partida",
@@ -70,7 +73,10 @@ const i18n = {
         areaScoreSize: "Tam.",
         areaScoreBase: "Base",
         areaScorePhase: "Fase",
-        areaScoreTotal: "Total"
+        areaScoreTotal: "Total",
+        phaseLabel: "Fase:",
+        turnLabel: "Turno:",
+        scoreLabel: "Pontuação"
     }
 };
 
@@ -102,6 +108,11 @@ function applyTranslations() {
     document.getElementById('txt-actions-hint').innerText = t('actionsHint');
     document.getElementById('txt-end-turn-btn').innerText = t('endTurnBtn');
     document.getElementById('txt-undo-btn').innerText = t('undoBtn');
+
+    // Phase, Turn, Score headers translation
+    document.getElementById('lbl-phase').innerText = t('phaseLabel');
+    document.getElementById('lbl-turn').innerText = t('turnLabel');
+    document.getElementById('lbl-score').innerText = t('scoreLabel');
 
     // Rerender tracks to get color names in correct language
     if (state.map) renderSidebar();
@@ -259,6 +270,13 @@ function renderHeader() {
     document.getElementById('val-silver').innerText = state.resources.silver;
     document.getElementById('val-commodities').innerText = state.resources.commodities;
 
+    const commodityBtn = document.getElementById('btn-commodity');
+    if (state.dice.hourglass === 2 && state.resources.commodities > 0) {
+        commodityBtn.classList.add('blink-active');
+    } else {
+        commodityBtn.classList.remove('blink-active');
+    }
+
     // Populate score history tooltip
     const tooltip = document.getElementById('score-history-tooltip');
     if (tooltip && state.scoreEvents) {
@@ -282,32 +300,19 @@ function showToast(htmlMessage) {
     if (!container) {
         container = document.createElement('div');
         container.id = 'toast-container';
-        container.style.position = 'fixed';
-        container.style.bottom = '20px';
-        container.style.left = '50%';
-        container.style.transform = 'translateX(-50%)';
-        container.style.display = 'flex';
-        container.style.flexDirection = 'column';
-        container.style.gap = '10px';
-        container.style.zIndex = '9999';
         document.body.appendChild(container);
     }
 
     const toast = document.createElement('div');
-    toast.className = 'glass-panel';
-    toast.style.padding = '15px 25px';
-    toast.style.background = 'rgba(255, 255, 255, 0.9)';
-    toast.style.color = '#102a43';
-    toast.style.fontWeight = 'bold';
-    toast.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
-    toast.style.animation = 'fadeInUp 0.3s ease-out';
+    toast.className = 'toast';
     toast.innerHTML = htmlMessage;
 
     container.appendChild(toast);
 
     setTimeout(() => {
         toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.5s ease';
+        toast.style.transform = 'translateX(30px)';
+        toast.style.transition = 'all 0.5s ease';
         setTimeout(() => toast.remove(), 500);
     }, 4000);
 }
@@ -524,14 +529,27 @@ function renderBoard() {
 
         // Small icon for castles
         if (hex.color === 'green' && hex.castleBonus && hex.val === null) {
-            const symbolsMap = { monk: '✝', worker: '⚒', silver: '🪙', commodity: '📦', purple: '✝', orange: '⚒', gray: '🪙', blue: '📦' };
-            const symbol = symbolsMap[hex.castleBonus] || '?';
-            const colorsMap = { monk: 'purple', worker: 'orange', silver: 'gray', commodity: 'blue' };
+            const colorsMap = { monk: 'purple', worker: 'orange', silver: 'gray', commodity: 'blue', purple: 'purple', orange: 'orange', gray: 'gray', blue: 'blue' };
             const iconColor = colorsMap[hex.castleBonus] || hex.castleBonus;
 
-            // Draw a subtle border circle and text symbol
+            // Draw a subtle border circle
             svg += `<circle cx="${cx}" cy="${cy + 12}" r="14" fill="var(--color-${iconColor})" stroke="white" stroke-width="2" />`;
-            svg += `<text x="${cx}" y="${cy + 12}" font-size="18px" fill="white" font-weight="bold" text-anchor="middle" dominant-baseline="central">${symbol}</text>`;
+            
+            const x = cx;
+            const y = cy + 12;
+            const bonusType = hex.castleBonus === 'purple' ? 'monk' : (hex.castleBonus === 'orange' ? 'worker' : (hex.castleBonus === 'gray' ? 'silver' : (hex.castleBonus === 'blue' ? 'commodity' : hex.castleBonus)));
+            
+            if (bonusType === 'monk') {
+                svg += `<text x="${x}" y="${y}" font-size="18px" fill="white" font-weight="bold" text-anchor="middle" dominant-baseline="central">✝</text>`;
+            } else if (bonusType === 'worker') {
+                svg += `<path d="M ${x} ${y - 6} a 3.5 3.5 0 1 1 0 7 a 3.5 3.5 0 0 1 0 -7 z M ${x - 7} ${y + 6} c 0 -3 3 -4.5 7 -4.5 s 7 1.5 7 4.5 v 1.5 H ${x - 7} v -1.5 z" fill="white" />`;
+            } else if (bonusType === 'silver') {
+                svg += `<path d="M ${x - 5} ${y - 1} L ${x - 2} ${y - 5} h 4 L ${x + 1} ${y - 1} z" fill="rgba(255,255,255,0.6)" />`;
+                svg += `<path d="M ${x - 7} ${y + 5} L ${x - 5} ${y - 1} h 10 L ${x + 7} ${y + 5} z" fill="white" />`;
+                svg += `<path d="M ${x - 5} ${y - 1} L ${x - 2} ${y - 5} M ${x + 2} ${y - 5} L ${x + 5} ${y - 1} M ${x + 5} ${y - 1} L ${x + 7} ${y + 5}" stroke="rgba(0,0,0,0.2)" stroke-width="1.2" />`;
+            } else if (bonusType === 'commodity') {
+                svg += `<path d="M ${x - 6} ${y - 5} c 0 -1.2 0.8 -2 2 -2 h 8 c 1.2 0 2 0.8 2 2 v 3 h -12 v -3 z M ${x - 6} ${y - 1} h 12 v 5 c 0 1.2 -0.8 2 -2 2 h -8 c -1.2 0 -2 -0.8 -2 -2 v -5 z M ${x} ${y + 3.5} a 1 1 0 1 0 0 -2 a 1 1 0 0 0 0 2 z" fill="white" />`;
+            }
         }
 
         // Draw area borders slightly bolder? (Omitted for simplicity, rely on colors)
@@ -583,7 +601,10 @@ function renderBoard() {
                     state.startHexChosen = true;
                     engine.rollDice();
                     renderAll(true);
-                    showToast(t('gameStarted'));
+                    const phase1Msg = state.language === 'en'
+                        ? `🔔 Phase 1 Started!<br>(Area Completion Bonus: +4 VP)<br>${t('gameStarted')}`
+                        : `🔔 Fase 1 Iniciada!<br>(Bônus de Área: +4 VP)<br>${t('gameStarted')}`;
+                    showToast(phase1Msg);
                 } else {
                     alert(t('chooseStartCastle'));
                 }
@@ -850,11 +871,11 @@ document.getElementById('btn-commodity').addEventListener('click', () => {
 document.getElementById('btn-silver').addEventListener('click', () => {
     if (state.resources.silver > 0 && !state.silverUsedThisTurn) {
         if (engine.useSilver()) {
-            showToast(state.language === 'en' ? "Silver used. You may place the remaining dice." : "Prata utilizada. Você pode colocar os dados restantes.");
+            showToast(state.language === 'en' ? "Silver Bar used. You may place the remaining dice." : "Barra de Prata utilizada. Você pode colocar os dados restantes.");
             renderAll();
         }
     } else {
-        showToast(state.language === 'en' ? "You cannot use Silver right now." : "Você não pode usar Prata neste momento.");
+        showToast(state.language === 'en' ? "You cannot use Silver Bar right now." : "Você não pode usar Barra de Prata neste momento.");
     }
 });
 

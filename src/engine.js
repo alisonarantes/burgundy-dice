@@ -1,4 +1,4 @@
-import { state, saveState, snapshot } from './state.js';
+import { state, saveState, snapshot, saveHighScores } from './state.js';
 
 export const engine = {
     rollDice() {
@@ -36,7 +36,10 @@ export const engine = {
         state.resources.silver += c;
         const pts = c * 2;
         state.score += pts;
-        if (pts > 0) state.scoreEvents.unshift({ msg: `Sold ${c} Commodities`, pts });
+        if (pts > 0) {
+            const logMsg = state.language === 'en' ? `Sold ${c} Blue Chests` : `Vendeu ${c} Baús Azuis`;
+            state.scoreEvents.unshift({ msg: logMsg, pts });
+        }
         state.resources.commodities = 0;
         saveState();
     },
@@ -147,7 +150,25 @@ export const engine = {
 
         if (hex.color === 'green') {
             // Award castle bonus instantly
-            const iconToName = { 'monk': '✝ Monk', 'worker': '⚒ Worker', 'silver': '🪙 Silver', 'commodity': '📦 Commodity', 'purple': '✝ Monk', 'orange': '⚒ Worker', 'gray': '🪙 Silver', 'blue': '📦 Commodity' };
+            const iconToName = state.language === 'en' ? {
+                'monk': '✝ Monk',
+                'worker': '👤 Worker',
+                'silver': '🪙 Silver Bar',
+                'commodity': '🗳 Blue Chest',
+                'purple': '✝ Monk',
+                'orange': '👤 Worker',
+                'gray': '🪙 Silver Bar',
+                'blue': '🗳 Blue Chest'
+            } : {
+                'monk': '✝ Monge',
+                'worker': '👤 Trabalhador',
+                'silver': '🪙 Barra de Prata',
+                'commodity': '🗳 Baú Azul',
+                'purple': '✝ Monge',
+                'orange': '👤 Trabalhador',
+                'gray': '🪙 Barra de Prata',
+                'blue': '🗳 Baú Azul'
+            };
             const won = iconToName[hex.castleBonus] || hex.castleBonus;
 
             if (hex.castleBonus === 'monk' || hex.castleBonus === 'purple') state.resources.monks++;
@@ -158,11 +179,13 @@ export const engine = {
             if (!init) {
                 state.score += 1;
                 state.scoreEvents.unshift({ msg: `Castle Bonus (${won})`, pts: 1 });
-                state.messages.push(`🏰 Castle Bonus: +1 VP & +1 ${won}`);
+                const msg = state.language === 'en' ? `🏰 Castle Bonus: +1 VP & +1 ${won}` : `🏰 Bônus de Castelo: +1 VP & +1 ${won}`;
+                state.messages.push(msg);
             } else {
                 state.score += 1;
                 state.scoreEvents.unshift({ msg: `Starting Castle Bonus (${won})`, pts: 1 });
-                state.messages.push(`🏰 Starting Castle Bonus: +1 VP & +1 ${won}`);
+                const msg = state.language === 'en' ? `🏰 Starting Castle Bonus: +1 VP & +1 ${won}` : `🏰 Bônus de Castelo Inicial: +1 VP & +1 ${won}`;
+                state.messages.push(msg);
             }
         }
 
@@ -216,16 +239,20 @@ export const engine = {
 
         if (hex.color === 'purple') {
             state.resources.monks++;
-            state.messages.push(`✝ Monastery Bonus: +1 Monk`);
+            const msg = state.language === 'en' ? `✝ Monastery Bonus: +1 Monk` : `✝ Bônus de Mosteiro: +1 Monge`;
+            state.messages.push(msg);
         } else if (hex.color === 'blue') {
             state.resources.commodities++;
-            state.messages.push(`📦 River Bonus: +1 Commodity`);
+            const msg = state.language === 'en' ? `🗳 River Bonus: +1 Blue Chest` : `🗳 Bônus de Rio: +1 Baú Azul`;
+            state.messages.push(msg);
         } else if (hex.color === 'orange') {
             state.resources.workers++;
-            state.messages.push(`⚒ City Bonus: +1 Worker`);
+            const msg = state.language === 'en' ? `👤 City Bonus: +1 Worker` : `👤 Bônus de Cidade: +1 Trabalhador`;
+            state.messages.push(msg);
         } else if (hex.color === 'gray') {
             state.resources.silver++;
-            state.messages.push(`🪙 Mine Bonus: +1 Silver`);
+            const msg = state.language === 'en' ? `🪙 Mine Bonus: +1 Silver Bar` : `🪙 Bônus de Mina: +1 Barra de Prata`;
+            state.messages.push(msg);
         }
 
         // Area Completion specific bonuses were moved up to markHex so they trigger on init too
@@ -266,23 +293,34 @@ export const engine = {
         if (state.placedThisTurn === 0) {
             state.resources.workers++;
             if (!state.messages) state.messages = [];
-            state.messages.push("⏳ Turno Passado: +1 Trabalhador ⚒");
+            const workerMsg = state.language === 'en' ? "⏳ Turn Passed: +1 Worker 👤" : "⏳ Turno Passado: +1 Trabalhador 👤";
+            state.messages.push(workerMsg);
         }
 
         state.turn++;
         if (state.turn > 8) {
             state.turn = 1;
             state.phase++;
+            if (state.phase <= 3) {
+                if (!state.messages) state.messages = [];
+                const areaBonusMap = [0, 4, 2, 1];
+                const bonusVal = areaBonusMap[state.phase];
+                const phaseMsg = state.language === 'en'
+                    ? `🔔 Phase ${state.phase} Started!<br>(Area Completion Bonus: +${bonusVal} VP)`
+                    : `🔔 Fase ${state.phase} Iniciada!<br>(Bônus de Área: +${bonusVal} VP)`;
+                state.messages.push(phaseMsg);
+            }
         }
         if (state.phase > 3) {
-            import('./state.js').then(module => {
-                state.lastScores.unshift({ score: state.score, date: new Date().toLocaleString(), map: state.selectedMap });
-                if (state.lastScores.length > 10) state.lastScores.pop();
-                module.saveHighScores();
-                saveState(); // Ensure the final state is written
-                if (!state.messages) state.messages = [];
-                state.messages.push(`🏁 O jogo acabou! Sua pontuação final foi: ${state.score} VP`);
-            });
+            state.lastScores.unshift({ score: state.score, date: new Date().toLocaleString(), map: state.selectedMap });
+            if (state.lastScores.length > 10) state.lastScores.pop();
+            saveHighScores();
+            saveState(); // Ensure the final state is written
+            if (!state.messages) state.messages = [];
+            const gameOverMsg = state.language === 'en'
+                ? `🏁 Game Over! Final Score: ${state.score} VP`
+                : `🏁 Fim de Jogo! Pontuação Final: ${state.score} VP`;
+            state.messages.push(gameOverMsg);
         } else {
             this.rollDice();
         }
