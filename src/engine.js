@@ -303,11 +303,9 @@ export const engine = {
             state.phase++;
             if (state.phase <= 3) {
                 if (!state.messages) state.messages = [];
-                const areaBonusMap = [0, 4, 2, 1];
-                const bonusVal = areaBonusMap[state.phase];
                 const phaseMsg = state.language === 'en'
-                    ? `🔔 Phase ${state.phase} Started!<br>(Area Completion Bonus: +${bonusVal} VP)`
-                    : `🔔 Fase ${state.phase} Iniciada!<br>(Bônus de Área: +${bonusVal} VP)`;
+                    ? `🔔 Phase ${state.phase} Started!`
+                    : `🔔 Fase ${state.phase} Iniciada!`;
                 state.messages.push(phaseMsg);
             }
         }

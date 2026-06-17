@@ -9,7 +9,7 @@ const screens = {
 
 const i18n = {
     en: {
-        uiTitle: "Burgundy Dice Solo <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.29</span>",
+        uiTitle: "Burgundy Dice Solo <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.30</span>",
         menu: "☰",
         historyBtn: "Scores",
         scoreLogBtn: "Match Log",
@@ -41,10 +41,18 @@ const i18n = {
         areaScoreTotal: "Total",
         phaseLabel: "Phase:",
         turnLabel: "Turn:",
-        scoreLabel: "Score"
+        scoreLabel: "Score",
+        subtitle: "The Dice Game (Solo Experience)",
+        selectDuchy: "Select your Map to start",
+        mapPrefix: "Map",
+        closeBtn: "Close",
+        cancelBtn: "Cancel",
+        useSilverBtn: "Use Silver",
+        rulesTitle: "Rules Summary",
+        historyTitle: "Score History 🏆"
     },
     pt: {
-        uiTitle: "Burgundy Dice Solo <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.29</span>",
+        uiTitle: "Burgundy Dice Solo <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.30</span>",
         menu: "☰",
         historyBtn: "Pontuações",
         scoreLogBtn: "Histórico da Partida",
@@ -76,7 +84,15 @@ const i18n = {
         areaScoreTotal: "Total",
         phaseLabel: "Fase:",
         turnLabel: "Turno:",
-        scoreLabel: "Pontuação"
+        scoreLabel: "Pontuação",
+        subtitle: "The Dice Game (Experiência Solo)",
+        selectDuchy: "Selecione seu Mapa para começar",
+        mapPrefix: "Mapa",
+        closeBtn: "Fechar",
+        cancelBtn: "Cancelar",
+        useSilverBtn: "Usar Prata",
+        rulesTitle: "Resumo das Regras",
+        historyTitle: "Maiores Pontuações 🏆"
     }
 };
 
@@ -85,6 +101,14 @@ function t(key) {
 }
 
 function applyTranslations() {
+    const subtitle = document.getElementById('txt-subtitle');
+    if (subtitle) subtitle.innerText = t('subtitle');
+    const selectDuchy = document.getElementById('txt-select-duchy');
+    if (selectDuchy) selectDuchy.innerText = t('selectDuchy');
+    document.querySelectorAll('.map-card').forEach(card => {
+        card.innerText = t('mapPrefix') + ' ' + card.dataset.map;
+    });
+
     document.getElementById('ui-title').innerHTML = t('uiTitle');
     document.getElementById('txt-menu').innerText = t('menu');
     document.getElementById('txt-history-btn').innerText = t('historyBtn');
@@ -114,16 +138,45 @@ function applyTranslations() {
     document.getElementById('lbl-turn').innerText = t('turnLabel');
     document.getElementById('lbl-score').innerText = t('scoreLabel');
 
+    // Rules translation
+    if (document.getElementById('rules-en')) document.getElementById('rules-en').classList.toggle('hidden', state.language !== 'en');
+    if (document.getElementById('rules-pt')) document.getElementById('rules-pt').classList.toggle('hidden', state.language !== 'pt');
+
+    const elsToTranslate = [
+        ['txt-close-history', 'closeBtn'],
+        ['txt-close-score-log', 'closeBtn'],
+        ['txt-close-area-score', 'closeBtn'],
+        ['txt-close-rules', 'closeBtn'],
+        ['txt-cancel-worker', 'cancelBtn'],
+        ['txt-cancel-monk', 'cancelBtn'],
+        ['txt-cancel-silver', 'cancelBtn'],
+        ['txt-use-silver', 'useSilverBtn'],
+        ['txt-rules-title', 'rulesTitle'],
+        ['txt-history-title', 'historyTitle']
+    ];
+
+    elsToTranslate.forEach(([id, key]) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = t(key);
+    });
+
     // Rerender tracks to get color names in correct language
     if (state.map) renderSidebar();
 }
 
 // Check for existing game state
 document.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('burgundyLanguage');
+    if (savedLang) {
+        state.language = savedLang;
+    }
+
     if (loadState()) {
         screens.start.classList.remove('active');
         screens.game.classList.remove('hidden');
         renderAll(true);
+    } else {
+        applyTranslations();
     }
 });
 
@@ -602,8 +655,8 @@ function renderBoard() {
                     engine.rollDice();
                     renderAll(true);
                     const phase1Msg = state.language === 'en'
-                        ? `🔔 Phase 1 Started!<br>(Area Completion Bonus: +4 VP)<br>${t('gameStarted')}`
-                        : `🔔 Fase 1 Iniciada!<br>(Bônus de Área: +4 VP)<br>${t('gameStarted')}`;
+                        ? `🔔 Phase 1 Started!<br>${t('gameStarted')}`
+                        : `🔔 Fase 1 Iniciada!<br>${t('gameStarted')}`;
                     showToast(phase1Msg);
                 } else {
                     alert(t('chooseStartCastle'));
@@ -749,8 +802,8 @@ document.getElementById('btn-monk').addEventListener('click', () => {
         let btn1 = document.getElementById('btn-m-c1');
         let btn2 = document.getElementById('btn-m-c2');
 
-        btn1.innerText = state.diceAvailable.color1 ? `Color 1 (${t(state.dice.color1) || state.dice.color1})` : 'Color 1 (Used)';
-        btn2.innerText = state.diceAvailable.color2 ? `Color 2 (${t(state.dice.color2) || state.dice.color2})` : 'Color 2 (Used)';
+        btn1.innerText = state.diceAvailable.color1 ? (state.language === 'en' ? `Color 1 (${t(state.dice.color1)})` : `Cor 1 (${t(state.dice.color1)})`) : (state.language === 'en' ? 'Color 1 (Used)' : 'Cor 1 (Usada)');
+        btn2.innerText = state.diceAvailable.color2 ? (state.language === 'en' ? `Color 2 (${t(state.dice.color2)})` : `Cor 2 (${t(state.dice.color2)})`) : (state.language === 'en' ? 'Color 2 (Used)' : 'Cor 2 (Usada)');
 
         window._monkSelectedColor = null;
         document.querySelectorAll('#monk-colors .c-swatch').forEach(s => s.style.border = '2px solid transparent');
@@ -772,7 +825,7 @@ document.querySelectorAll('#monk-colors .c-swatch').forEach(el => {
     const btn = document.getElementById(id);
     if (!btn) return;
     btn.addEventListener('click', () => {
-        if (!window._monkSelectedColor) return alert("Select a color first!");
+        if (!window._monkSelectedColor) return alert(state.language === 'en' ? "Select a color first!" : "Selecione uma cor primeiro!");
         const targetColIdx = id.includes('c1') ? 1 : 2;
         if (engine.useMonk(targetColIdx, window._monkSelectedColor)) {
             document.getElementById('modal-monk').classList.remove('active');
@@ -785,7 +838,7 @@ document.querySelectorAll('#monk-colors .c-swatch').forEach(el => {
 });
 
 document.getElementById('btn-new-game').addEventListener('click', () => {
-    if (confirm("Are you sure you want to abandon the current game?")) {
+    if (confirm(state.language === 'en' ? "Are you sure you want to abandon the current game?" : "Tem certeza que deseja abandonar a partida atual?")) {
         clearState();
         screens.game.classList.add('hidden');
         screens.start.classList.add('active');
@@ -803,7 +856,14 @@ document.getElementById('btn-rules').addEventListener('click', () => {
 
 document.getElementById('btn-lang-toggle').addEventListener('click', () => {
     state.language = state.language === 'pt' ? 'en' : 'pt';
+    localStorage.setItem('burgundyLanguage', state.language);
     renderAll();
+});
+
+document.getElementById('btn-lang-toggle-start').addEventListener('click', () => {
+    state.language = state.language === 'pt' ? 'en' : 'pt';
+    localStorage.setItem('burgundyLanguage', state.language);
+    applyTranslations();
 });
 
 document.getElementById('btn-history').addEventListener('click', () => {
