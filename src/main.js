@@ -10,7 +10,7 @@ const screens = {
 
 const i18n = {
     en: {
-        uiTitle: "Burgundy Dice Solo <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.31</span>",
+        uiTitle: "Burgundy Dice Solo",
         menu: "☰",
         historyBtn: "Scores",
         scoreLogBtn: "Match Log",
@@ -52,7 +52,7 @@ const i18n = {
         historyTitle: "Score History 🏆"
     },
     pt: {
-        uiTitle: "Burgundy Dice Solo <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.31</span>",
+        uiTitle: "Burgundy Dice Solo",
         menu: "☰",
         historyBtn: "Pontuações",
         scoreLogBtn: "Histórico da Partida",
