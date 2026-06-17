@@ -363,7 +363,22 @@ function updatePartnerHighlights() {
 function renderHeader() {
     document.getElementById('val-phase').innerText = state.phase > 3 ? 3 : state.phase;
     document.getElementById('val-turn').innerText = (state.phase > 3 ? 8 : state.turn) + ' / 8';
-    document.getElementById('val-score').innerText = state.score;
+    const scoreVal = document.getElementById('val-score');
+    scoreVal.innerText = state.score;
+    
+    if (state.score < 50) {
+        scoreVal.style.color = '#ef4444';
+        scoreVal.style.textShadow = '0 0 10px rgba(239, 68, 68, 0.4)';
+    } else if (state.score < 60) {
+        scoreVal.style.color = '#f59e0b';
+        scoreVal.style.textShadow = '0 0 10px rgba(245, 158, 11, 0.4)';
+    } else if (state.score < 70) {
+        scoreVal.style.color = '#10b981';
+        scoreVal.style.textShadow = '0 0 10px rgba(16, 185, 129, 0.4)';
+    } else {
+        scoreVal.style.color = '#06b6d4';
+        scoreVal.style.textShadow = '0 0 10px rgba(6, 182, 212, 0.4)';
+    }
 
     document.getElementById('val-workers').innerText = state.resources.workers;
     document.getElementById('val-monks').innerText = state.resources.monks;
@@ -414,7 +429,7 @@ function showToast(htmlMessage) {
         toast.style.transform = 'translateX(30px)';
         toast.style.transition = 'all 0.5s ease';
         setTimeout(() => toast.remove(), 500);
-    }, 4000);
+    }, 1500);
 }
 
 function renderSidebar() {
