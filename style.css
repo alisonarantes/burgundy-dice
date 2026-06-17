@@ -350,6 +350,7 @@ h3 {
     margin-bottom: 0.25rem !important;
     width: 100%;
     justify-content: center;
+    flex-shrink: 0;
   }
 
   .sidebar .action-panel .hint {
@@ -373,6 +374,7 @@ h3 {
   display: flex;
   gap: 10px;
   justify-content: space-between;
+  flex-shrink: 0;
 }
 
 .die {
