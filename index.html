@@ -12,9 +12,10 @@
 <body>
     <!-- Initial Overlay -->
     <div id="start-screen" class="overlay active">
-        <div class="glass-panel text-center">
+        <div class="glass-panel text-center" style="position: relative;">
+            <button id="btn-lang-toggle-start" class="btn small" style="position: absolute; top: 10px; right: 10px; background: var(--accent); color: white; padding: 4px 8px; font-size: 0.8rem;">🇺🇸 EN / 🇧🇷 PT</button>
             <h1 class="title-main">Burgundy Dice Solo</h1>
-            <p class="subtitle">The Dice Game (Solo Experience)</p>
+            <p class="subtitle" id="txt-subtitle">The Dice Game (Solo Experience)</p>
             <div class="map-selection">
                 <h2 id="txt-select-duchy">Select your Map to start</h2>
                 <div class="map-cards">
@@ -35,7 +36,7 @@
             <h2 id="ui-title"
                 style="margin: 0; font-size: clamp(0.9rem, 3.5vw, 1.4rem); color: var(--text-main); font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 Burgundy Dice Solo <span
-                    style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">v1.29</span>
+                    style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">v1.30</span>
             </h2>
             <div class=" dropdown">
                 <button id="btn-menu" class="btn small"
@@ -190,18 +191,18 @@
                 <button class="btn" id="btn-m-c1">Color Die 1</button>
                 <button class="btn" id="btn-m-c2">Color Die 2</button>
             </div>
-            <button class="btn danger"
+            <button id="txt-cancel-monk" class="btn danger"
                 onclick="document.getElementById('modal-monk').classList.remove('active'); setTimeout(() => document.getElementById('modal-monk').classList.add('hidden'), 300)">Cancel</button>
         </div>
     </div>
 
     <div id="modal-history" class="overlay hidden">
         <div class="glass-panel small text-center">
-            <h3>Score History 🏆</h3>
+            <h3 id="txt-history-title">Score History 🏆</h3>
             <div id="history-list" style="margin: 15px 0; max-height: 200px; overflow-y: auto; text-align: left;">
                 <!-- Filled dynamically by main.js -->
             </div>
-            <button class="btn primary"
+            <button id="txt-close-history" class="btn primary"
                 onclick="document.getElementById('modal-history').classList.remove('active'); setTimeout(() => document.getElementById('modal-history').classList.add('hidden'), 300)">Close</button>
         </div>
     </div>
@@ -214,7 +215,7 @@
                 style="margin: 15px 0; max-height: 300px; overflow-y: auto; text-align: left; padding-right: 10px;">
                 <!-- Filled dynamically by main.js -->
             </div>
-            <button class="btn primary"
+            <button id="txt-close-score-log" class="btn danger"
                 onclick="document.getElementById('modal-score-log').classList.remove('active'); setTimeout(() => document.getElementById('modal-score-log').classList.add('hidden'), 300)">Close</button>
         </div>
     </div>
@@ -253,11 +254,10 @@
     <!-- Rules Modal -->
     <div id="modal-rules" class="overlay hidden">
         <div class="glass-panel text-left" style="max-height: 80vh; overflow-y: auto; padding: 30px;">
-            <h2>Rules Summary</h2>
-            <div class="rules-content" style="line-height: 1.4; font-size: 0.9em;">
+            <h2 id="txt-rules-title">Rules Summary</h2>
+            <div id="rules-en" class="rules-content" style="line-height: 1.4; font-size: 0.9em;">
                 <h3>Turn Structure</h3>
-                <p>Roll dice. You can use 1 number die + 1 color die to mark an adjacent valid hex. Or, if you have
-                    Silver Bars, use them to mark the remaining pair.</p>
+                <p>Roll dice. You can use 1 number die + 1 color die to mark an adjacent valid hex. Or, if you have Silver Bars, use them to mark the remaining pair.</p>
 
                 <h3>Hex Placement Rules</h3>
                 <ul style="text-align: left;">
@@ -266,103 +266,115 @@
                     <li><strong>Monastery (Purple)</strong>: Must be 1 or 2.</li>
                     <li><strong>Mine (Gray)</strong>: Must be 3 or 4.</li>
                     <li><strong>River (Blue)</strong>: Must be 5 or 6.</li>
-                    <li><strong>Castle (Green)</strong>: Must match a number of any marked neighbor. Grants instant
-                        bonus: Workers, Monks, Silver Bars, or Blue Chests (Commodities) depending on its icon.</li>
+                    <li><strong>Castle (Green)</strong>: Must match a number of any marked neighbor. Grants instant bonus: Workers, Monks, Silver Bars, or Blue Chests (Commodities) depending on its icon.</li>
                 </ul>
 
-                <h3>Resources & Castles</h3>
+                <h3>Resources</h3>
                 <p><em>Note: You can use a MAXIMUM OF 1 bonus (Worker, Monk, OR Silver Bar) per turn.</em></p>
                 <ul style="text-align: left;">
-                    <li><strong>Worker (Orange Silhouette)</strong>: +/- 1 to a number die (wraps 1 to 6).</li>
-                    <li><strong>Monk (Purple Icon)</strong>: Change a color die to any color.</li>
-                    <li><strong>Silver Bar (Gray Icon)</strong>: Grants a second action per turn (allows placing the second
-                        pair of dice).</li>
-                    <li><strong>Blue Chest (Blue Icon)</strong>: Automatically sold when a double hourglass (⏳⏳) is
-                        rolled. Gives 1 Silver Bar and 2 VP per Blue Chest sold.</li>
+                    <li><strong>Worker (Orange Silhouette)</strong>: Change a number die to ANY value.</li>
+                    <li><strong>Monk (Purple Icon)</strong>: Change a color die to ANY color.</li>
+                    <li><strong>Silver Bar (Gray Icon)</strong>: Grants a second action per turn (allows placing the second pair of dice).</li>
+                    <li><strong>Blue Chest (Blue Icon)</strong>: Automatically sold when a double hourglass (⏳⏳) is rolled. Gives 1 Silver Bar and 2 VP per Blue Chest sold.</li>
                 </ul>
 
                 <h3 id="scoring-rules">Scoring & Area Bonuses</h3>
-                <p>Completing a colored area immediately awards Victory Points (VP) based on its size, plus a Phase
-                    Completion bonus.</p>
+                <p>Completing a colored area immediately awards Victory Points (VP) based on its size and the current Phase. Pastures (Yellow) grant double these VP!</p>
+                <div style="display: flex; justify-content: center; margin: 10px 0;">
+                    <table style="border-collapse: collapse; text-align: center; border: 1px solid var(--glass-border);">
+                        <tr style="background: rgba(0,0,0,0.05);">
+                            <th style="padding: 4px 10px; border: 1px solid var(--glass-border);">Area Size</th>
+                            <th style="padding: 4px 10px; border: 1px solid var(--glass-border);">Phase 1</th>
+                            <th style="padding: 4px 10px; border: 1px solid var(--glass-border);">Phase 2</th>
+                            <th style="padding: 4px 10px; border: 1px solid var(--glass-border);">Phase 3</th>
+                        </tr>
+                        <tr><td style="padding: 4px; border: 1px solid var(--glass-border);">1 Hex</td><td style="padding: 4px; border: 1px solid var(--glass-border);">1 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">1 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">1 VP</td></tr>
+                        <tr><td style="padding: 4px; border: 1px solid var(--glass-border);">2 Hexes</td><td style="padding: 4px; border: 1px solid var(--glass-border);">4 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">3 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">2 VP</td></tr>
+                        <tr><td style="padding: 4px; border: 1px solid var(--glass-border);">3 Hexes</td><td style="padding: 4px; border: 1px solid var(--glass-border);">8 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">6 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">4 VP</td></tr>
+                        <tr><td style="padding: 4px; border: 1px solid var(--glass-border);">4 Hexes</td><td style="padding: 4px; border: 1px solid var(--glass-border);">13 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">10 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">7 VP</td></tr>
+                    </table>
+                </div>
                 <div style="background: rgba(0,0,0,0.05); padding: 10px; margin-bottom: 10px; border-radius: 8px;">
                     <strong>When the last hex of an area is filled, you gain a Bonus based on its color:</strong>
                     <ul style="text-align: left; margin-bottom: 0;">
                         <li><strong>Orange (City)</strong>: 1 Worker</li>
                         <li><strong>Blue (River)</strong>: 1 Blue Chest (Commodity)</li>
                         <li><strong>Purple (Monastery)</strong>: 1 Monk</li>
+                        <li><strong>Gray (Mine)</strong>: 1 Silver Bar</li>
                         <li><strong>Yellow (Pasture)</strong>: Double VP for the Area!</li>
                     </ul>
                 </div>
-                <div style="display: flex; gap: 40px; justify-content: space-around; margin: 10px 0;">
-                    <table style="border-collapse: collapse; text-align: left;">
-                        <tr>
-                            <th style="border-bottom: 1px solid var(--text-muted); padding: 4px;">Area Size</th>
-                            <th style="border-bottom: 1px solid var(--text-muted); padding: 4px;">VP</th>
-                        </tr>
-                        <tr>
-                            <td>1 Hex</td>
-                            <td>1 VP</td>
-                        </tr>
-                        <tr>
-                            <td>2 Hexes</td>
-                            <td>3 VP</td>
-                        </tr>
-                        <tr>
-                            <td>3 Hexes</td>
-                            <td>6 VP</td>
-                        </tr>
-                        <tr>
-                            <td>4 Hexes</td>
-                            <td>10 VP</td>
-                        </tr>
-                        <tr>
-                            <td>5 Hexes</td>
-                            <td>15 VP</td>
-                        </tr>
-                        <tr>
-                            <td>6 Hexes</td>
-                            <td>21 VP</td>
-                        </tr>
-                        <tr>
-                            <td>7 Hexes</td>
-                            <td>28 VP</td>
-                        </tr>
-                    </table>
-                    <table style="border-collapse: collapse; text-align: left;">
-                        <tr>
-                            <th style="border-bottom: 1px solid var(--text-muted); padding: 4px;">Phase</th>
-                            <th style="border-bottom: 1px solid var(--text-muted); padding: 4px;">Extra VP</th>
-                        </tr>
-                        <tr>
-                            <td>Phase 1</td>
-                            <td>+ 10 VP</td>
-                        </tr>
-                        <tr>
-                            <td>Phase 2</td>
-                            <td>+ 8 VP</td>
-                        </tr>
-                        <tr>
-                            <td>Phase 3</td>
-                            <td>+ 6 VP</td>
-                        </tr>
-                    </table>
-                </div>
+                <p>Additionally, marking the final hex of a particular color in your entire duchy grants a large VP bonus depending on the phase.</p>
                 <h3 style="margin-top: 15px;">Credits</h3>
                 <p>Designed by <strong>Stefan Feld</strong> and <strong>Christoph Toussaint</strong>.<br>
-                    For more details, visit the <a
-                        href="https://boardgamegeek.com/boardgame/232473/the-castles-of-burgundy-the-dice-game"
-                        target="_blank" style="color:var(--accent); text-decoration: underline;">BoardGameGeek page</a>.
+                    For more details, visit the <a href="https://boardgamegeek.com/boardgame/232473/the-castles-of-burgundy-the-dice-game" target="_blank" style="color:var(--accent); text-decoration: underline;">BoardGameGeek page</a>.
                 </p>
             </div>
-            <button class="btn danger"
+            
+            <div id="rules-pt" class="rules-content hidden" style="line-height: 1.4; font-size: 0.9em;">
+                <h3>Estrutura do Turno</h3>
+                <p>Role os dados. Você pode usar 1 dado de número + 1 dado de cor para marcar um hexágono adjacente válido. Se possuir Barras de Prata, pode usá-las para marcar o par de dados restante.</p>
+
+                <h3>Regras de Posicionamento</h3>
+                <ul style="text-align: left;">
+                    <li><strong>Cidade (Laranja)</strong>: Precisa de números diferentes na mesma área.</li>
+                    <li><strong>Pastagem (Amarelo)</strong>: Precisa de números iguais na mesma área.</li>
+                    <li><strong>Mosteiro (Roxo)</strong>: Obrigatório usar 1 ou 2.</li>
+                    <li><strong>Mina (Cinza)</strong>: Obrigatório usar 3 ou 4.</li>
+                    <li><strong>Rio (Azul)</strong>: Obrigatório usar 5 ou 6.</li>
+                    <li><strong>Castelo (Verde)</strong>: O número precisa ser igual ao de qualquer vizinho já marcado. Dá um bônus instantâneo de Trabalhador, Monge, Prata ou Baú, dependendo do ícone.</li>
+                </ul>
+
+                <h3>Recursos</h3>
+                <p><em>Nota: Você pode usar no MÁXIMO 1 bônus (Trabalhador, Monge OU Prata) por turno.</em></p>
+                <ul style="text-align: left;">
+                    <li><strong>Trabalhador (Silhueta Laranja)</strong>: Muda um dado de número para QUALQUER valor.</li>
+                    <li><strong>Monge (Ícone Roxo)</strong>: Muda um dado de cor para QUALQUER cor.</li>
+                    <li><strong>Barra de Prata (Ícone Cinza)</strong>: Permite uma segunda ação no turno (usar o outro par de dados).</li>
+                    <li><strong>Baú Azul (Ícone Azul)</strong>: Vendido automaticamente quando sai a ampulheta dupla (⏳⏳). Rende 1 Barra de Prata e 2 VP por Baú vendido.</li>
+                </ul>
+
+                <h3 id="scoring-rules">Pontuação e Bônus de Área</h3>
+                <p>Completar uma área colorida concede Pontos de Vitória (VP) baseados no seu tamanho e na Fase atual. Pastagens (Amarelo) concedem o dobro desses VP!</p>
+                <div style="display: flex; justify-content: center; margin: 10px 0;">
+                    <table style="border-collapse: collapse; text-align: center; border: 1px solid var(--glass-border);">
+                        <tr style="background: rgba(0,0,0,0.05);">
+                            <th style="padding: 4px 10px; border: 1px solid var(--glass-border);">Tamanho</th>
+                            <th style="padding: 4px 10px; border: 1px solid var(--glass-border);">Fase 1</th>
+                            <th style="padding: 4px 10px; border: 1px solid var(--glass-border);">Fase 2</th>
+                            <th style="padding: 4px 10px; border: 1px solid var(--glass-border);">Fase 3</th>
+                        </tr>
+                        <tr><td style="padding: 4px; border: 1px solid var(--glass-border);">1 Hex</td><td style="padding: 4px; border: 1px solid var(--glass-border);">1 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">1 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">1 VP</td></tr>
+                        <tr><td style="padding: 4px; border: 1px solid var(--glass-border);">2 Hex</td><td style="padding: 4px; border: 1px solid var(--glass-border);">4 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">3 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">2 VP</td></tr>
+                        <tr><td style="padding: 4px; border: 1px solid var(--glass-border);">3 Hex</td><td style="padding: 4px; border: 1px solid var(--glass-border);">8 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">6 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">4 VP</td></tr>
+                        <tr><td style="padding: 4px; border: 1px solid var(--glass-border);">4 Hex</td><td style="padding: 4px; border: 1px solid var(--glass-border);">13 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">10 VP</td><td style="padding: 4px; border: 1px solid var(--glass-border);">7 VP</td></tr>
+                    </table>
+                </div>
+                <div style="background: rgba(0,0,0,0.05); padding: 10px; margin-bottom: 10px; border-radius: 8px;">
+                    <strong>Ao preencher o último hexágono de uma área, você ganha um Bônus:</strong>
+                    <ul style="text-align: left; margin-bottom: 0;">
+                        <li><strong>Laranja (Cidade)</strong>: 1 Trabalhador</li>
+                        <li><strong>Azul (Rio)</strong>: 1 Baú Azul</li>
+                        <li><strong>Roxo (Mosteiro)</strong>: 1 Monge</li>
+                        <li><strong>Cinza (Mina)</strong>: 1 Barra de Prata</li>
+                        <li><strong>Amarelo (Pastagem)</strong>: O dobro de VP para a Área!</li>
+                    </ul>
+                </div>
+                <p>Além disso, marcar o último hexágono de uma determinada cor em todo o seu mapa concede um grande bônus de VP dependendo da fase atual.</p>
+                <h3 style="margin-top: 15px;">Créditos</h3>
+                <p>Projetado por <strong>Stefan Feld</strong> e <strong>Christoph Toussaint</strong>.<br>
+                    Para mais detalhes, visite a <a href="https://boardgamegeek.com/boardgame/232473/the-castles-of-burgundy-the-dice-game" target="_blank" style="color:var(--accent); text-decoration: underline;">página no BoardGameGeek</a>.
+                </p>
+            </div>
+            <button id="txt-close-rules" class="btn danger"
                 onclick="document.getElementById('modal-rules').classList.remove('active'); setTimeout(() => document.getElementById('modal-rules').classList.add('hidden'), 300)"
                 style="margin-top: 20px;">Close</button>
         </div>
     </div>
-    <script type="module" src="./src/maps.js?v=1.29"></script>
-    <script type="module" src="./src/state.js?v=1.29"></script>
-    <script type="module" src="./src/engine.js?v=1.29"></script>
-    <script type="module" src="./src/main.js?v=1.29"></script>
+    <script type="module" src="./src/maps.js?v=1.30"></script>
+    <script type="module" src="./src/state.js?v=1.30"></script>
+    <script type="module" src="./src/engine.js?v=1.30"></script>
+    <script type="module" src="./src/main.js?v=1.30"></script>
 </body>
 
 </html>

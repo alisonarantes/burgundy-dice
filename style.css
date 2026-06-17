@@ -732,15 +732,17 @@ svg {
   }
 }
 
-/* Toast System - Top Right Corner */
+/* Toast System - Center Screen */
 #toast-container {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   gap: 10px;
   z-index: 9999;
+  align-items: center;
 }
 
 .toast {
@@ -752,21 +754,22 @@ svg {
   backdrop-filter: blur(8px);
   color: #102a43;
   font-weight: 600;
-  animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: toastPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   min-width: 250px;
   max-width: 350px;
   word-wrap: break-word;
   border-left: 4px solid var(--accent);
   font-size: 0.95rem;
+  text-align: center;
 }
 
-@keyframes toastSlideIn {
+@keyframes toastPopIn {
   from {
-    transform: translateX(30px);
+    transform: scale(0.8);
     opacity: 0;
   }
   to {
-    transform: translateX(0);
+    transform: scale(1);
     opacity: 1;
   }
 }
