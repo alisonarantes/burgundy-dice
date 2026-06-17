@@ -708,14 +708,14 @@ svg {
   }
 
   #top-nav {
-    padding: 10px !important;
+    padding: 5px 10px !important;
   }
 
   .glass-header {
     flex-wrap: wrap;
     justify-content: space-between;
-    padding: 0.5rem 1rem;
-    gap: 10px;
+    padding: 0.25rem 0.5rem;
+    gap: 5px;
   }
 
   .stat-group.resources {
