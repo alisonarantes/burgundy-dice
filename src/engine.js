@@ -153,20 +153,20 @@ export const engine = {
             const iconToName = state.language === 'en' ? {
                 'monk': '✝ Monk',
                 'worker': '👤 Worker',
-                'silver': '🪙 Silver Bar',
+                'silver': '🪙 Silver',
                 'commodity': '🗳 Blue Chest',
                 'purple': '✝ Monk',
                 'orange': '👤 Worker',
-                'gray': '🪙 Silver Bar',
+                'gray': '🪙 Silver',
                 'blue': '🗳 Blue Chest'
             } : {
                 'monk': '✝ Monge',
                 'worker': '👤 Trabalhador',
-                'silver': '🪙 Barra de Prata',
+                'silver': '🪙 Prata',
                 'commodity': '🗳 Baú Azul',
                 'purple': '✝ Monge',
                 'orange': '👤 Trabalhador',
-                'gray': '🪙 Barra de Prata',
+                'gray': '🪙 Prata',
                 'blue': '🗳 Baú Azul'
             };
             const won = iconToName[hex.castleBonus] || hex.castleBonus;
@@ -230,10 +230,19 @@ export const engine = {
 
         state.score += totalPts;
         let msgShort = hex.color === 'yellow' ? `Pasture Area size ${size}` : `Area size ${size}`;
+        if (state.language === 'pt') {
+            msgShort = hex.color === 'yellow' ? `Área de Pasto tam. ${size}` : `Área tam. ${size}`;
+        }
         state.scoreEvents.unshift({ msg: msgShort, pts: totalPts });
 
-        let msg = `✨ Area Completed! Size ${size} grants +${totalPts} VP.`;
-        if (hex.color === 'yellow') msg = `✨ Pasture Area Completed! Size ${size} grants double VP (+${totalPts} VP).`;
+        let msg = state.language === 'en' 
+            ? `✨ Area Completed! Size ${size} grants +${totalPts} VP.` 
+            : `✨ Área concluída! Tamanho ${size} concede +${totalPts} VP.`;
+        if (hex.color === 'yellow') {
+            msg = state.language === 'en' 
+                ? `✨ Pasture Area Completed! Size ${size} grants double VP (+${totalPts} VP).` 
+                : `✨ Área de Pasto concluída! Tamanho ${size} concede o dobro de VP (+${totalPts} VP).`;
+        }
 
         state.messages.push(msg);
 
@@ -251,7 +260,7 @@ export const engine = {
             state.messages.push(msg);
         } else if (hex.color === 'gray') {
             state.resources.silver++;
-            const msg = state.language === 'en' ? `🪙 Mine Bonus: +1 Silver Bar` : `🪙 Bônus de Mina: +1 Barra de Prata`;
+            const msg = state.language === 'en' ? `🪙 Mine Bonus: +1 Silver` : `🪙 Bônus de Mina: +1 Prata`;
             state.messages.push(msg);
         }
 

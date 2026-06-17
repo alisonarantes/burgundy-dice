@@ -1,5 +1,6 @@
 import { state, initGame, loadState, clearState, restoreSnapshot } from './state.js';
 import { engine } from './engine.js';
+import { buildMap, mapAData, mapBData, mapCData, mapDData } from './maps.js';
 
 // DOM Elements
 const screens = {
@@ -9,7 +10,7 @@ const screens = {
 
 const i18n = {
     en: {
-        uiTitle: "Burgundy Dice Solo <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.30</span>",
+        uiTitle: "Burgundy Dice Solo <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.31</span>",
         menu: "☰",
         historyBtn: "Scores",
         scoreLogBtn: "Match Log",
@@ -20,7 +21,6 @@ const i18n = {
         guideBtn: "Guide",
         diceTitle: "Dice Rolled",
         actionsTitle: "Actions",
-        actionsHint: "Select a color die and a number die to mark a valid hex.",
         endTurnBtn: "End Turn",
         undoBtn: "Undo",
         city: "City",
@@ -52,7 +52,7 @@ const i18n = {
         historyTitle: "Score History 🏆"
     },
     pt: {
-        uiTitle: "Burgundy Dice Solo <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.30</span>",
+        uiTitle: "Burgundy Dice Solo <span style='font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;'>v1.31</span>",
         menu: "☰",
         historyBtn: "Pontuações",
         scoreLogBtn: "Histórico da Partida",
@@ -63,7 +63,6 @@ const i18n = {
         guideBtn: "Guia",
         diceTitle: "Dados Rolados",
         actionsTitle: "Ações",
-        actionsHint: "Selecione um dado de cor e um numérico para marcar um hexágono.",
         endTurnBtn: "Passar Turno",
         undoBtn: "Desfazer",
         city: "Cidade",
@@ -100,13 +99,62 @@ function t(key) {
     return i18n[state.language][key] || key;
 }
 
+function renderThumbnail(mapData) {
+    const map = buildMap(mapData);
+    const SIZE = 10;
+    const w = Math.sqrt(3) * SIZE;
+    const h = 2 * SIZE;
+
+    let minX = Infinity, minY = Infinity;
+    let maxX = -Infinity, maxY = -Infinity;
+
+    map.hexes.forEach(hex => {
+        const x = w * (hex.q + hex.r / 2);
+        const y = h * 0.75 * hex.r;
+        if (x < minX) minX = x; if (x > maxX) maxX = x;
+        if (y < minY) minY = y; if (y > maxY) maxY = y;
+    });
+
+    const padding = 2;
+    const vbMinX = minX - w - padding;
+    const vbMinY = minY - h - padding;
+    const vbWidth = (maxX - minX) + 2 * w + 2 * padding;
+    const vbHeight = (maxY - minY) + 2 * h + 2 * padding;
+
+    let svg = `<svg viewBox="${vbMinX} ${vbMinY} ${vbWidth} ${vbHeight}" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 80px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">`;
+
+    map.hexes.forEach(hex => {
+        const cx = w * (hex.q + hex.r / 2);
+        const cy = h * 0.75 * hex.r;
+
+        let points = [];
+        for (let i = 0; i < 6; i++) {
+            let angle_deg = 60 * i - 30;
+            let angle_rad = Math.PI / 180 * angle_deg;
+            points.push(`${cx + SIZE * Math.cos(angle_rad)},${cy + SIZE * Math.sin(angle_rad)}`);
+        }
+        
+        const classNames = `hex hex-${hex.color}`;
+        svg += `<polygon points="${points.join(' ')}" class="${classNames}" stroke="#222" stroke-width="1"/>`;
+    });
+
+    svg += `</svg>`;
+    return svg;
+}
+
 function applyTranslations() {
     const subtitle = document.getElementById('txt-subtitle');
     if (subtitle) subtitle.innerText = t('subtitle');
     const selectDuchy = document.getElementById('txt-select-duchy');
     if (selectDuchy) selectDuchy.innerText = t('selectDuchy');
     document.querySelectorAll('.map-card').forEach(card => {
-        card.innerText = t('mapPrefix') + ' ' + card.dataset.map;
+        const mapLetter = card.dataset.map;
+        let mapData = mapAData;
+        if (mapLetter === 'B') mapData = mapBData;
+        if (mapLetter === 'C') mapData = mapCData;
+        if (mapLetter === 'D') mapData = mapDData;
+        
+        card.innerHTML = `<div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 5px;">${t('mapPrefix')} ${mapLetter}</div>` + renderThumbnail(mapData);
     });
 
     document.getElementById('ui-title').innerHTML = t('uiTitle');
@@ -129,7 +177,6 @@ function applyTranslations() {
     if (areaScoreTitle) areaScoreTitle.innerText = t('areaScoreTitle');
     document.getElementById('txt-dice-title').innerText = t('diceTitle');
     document.getElementById('txt-actions-title').innerText = t('actionsTitle');
-    document.getElementById('txt-actions-hint').innerText = t('actionsHint');
     document.getElementById('txt-end-turn-btn').innerText = t('endTurnBtn');
     document.getElementById('txt-undo-btn').innerText = t('undoBtn');
 
@@ -931,11 +978,11 @@ document.getElementById('btn-commodity').addEventListener('click', () => {
 document.getElementById('btn-silver').addEventListener('click', () => {
     if (state.resources.silver > 0 && !state.silverUsedThisTurn) {
         if (engine.useSilver()) {
-            showToast(state.language === 'en' ? "Silver Bar used. You may place the remaining dice." : "Barra de Prata utilizada. Você pode colocar os dados restantes.");
+            showToast(state.language === 'en' ? "Silver used. You may place the remaining dice." : "Prata utilizada. Você pode colocar os dados restantes.");
             renderAll();
         }
     } else {
-        showToast(state.language === 'en' ? "You cannot use Silver Bar right now." : "Você não pode usar Barra de Prata neste momento.");
+        showToast(state.language === 'en' ? "You cannot use Silver right now." : "Você não pode usar Prata neste momento.");
     }
 });
 
