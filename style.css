@@ -28,6 +28,7 @@ body {
   background: var(--bg-gradient);
   color: var(--text-main);
   min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
 }
 
@@ -263,6 +264,7 @@ h3 {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
   width: 100vw;
   overflow: hidden;
 }
@@ -328,6 +330,7 @@ h3 {
     flex-direction: column;
     align-items: center;
     padding: 0.5rem;
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
     gap: 0.5rem;
     flex-shrink: 0;
     order: 2;
