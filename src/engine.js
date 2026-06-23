@@ -320,7 +320,7 @@ export const engine = {
         }
         if (state.phase > 3) {
             state.lastScores.unshift({ score: state.score, date: new Date().toLocaleString(), map: state.selectedMap });
-            if (state.lastScores.length > 10) state.lastScores.pop();
+            if (state.lastScores.length > 50) state.lastScores.pop();
             saveHighScores();
             saveState(); // Ensure the final state is written
             if (!state.messages) state.messages = [];

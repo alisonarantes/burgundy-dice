@@ -864,6 +864,10 @@ document.getElementById('btn-monk').addEventListener('click', () => {
         let btn1 = document.getElementById('btn-m-c1');
         let btn2 = document.getElementById('btn-m-c2');
 
+        document.querySelector('#modal-monk h3').innerText = state.language === 'en' ? 'Use Monk ✝' : 'Usar Monge ✝';
+        document.getElementById('txt-monk-desc').innerText = state.language === 'en' ? 'Change a color die to any other color.' : 'Altere um dado de cor para qualquer outra cor.';
+        document.getElementById('txt-monk-target').innerText = state.language === 'en' ? 'Target:' : 'Alvo:';
+
         btn1.innerText = state.diceAvailable.color1 ? (state.language === 'en' ? `Color 1 (${t(state.dice.color1)})` : `Cor 1 (${t(state.dice.color1)})`) : (state.language === 'en' ? 'Color 1 (Used)' : 'Cor 1 (Usada)');
         btn2.innerText = state.diceAvailable.color2 ? (state.language === 'en' ? `Color 2 (${t(state.dice.color2)})` : `Cor 2 (${t(state.dice.color2)})`) : (state.language === 'en' ? 'Color 2 (Used)' : 'Cor 2 (Usada)');
 
