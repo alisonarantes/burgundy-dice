@@ -14,7 +14,7 @@
     <div id="start-screen" class="overlay active">
         <div class="glass-panel text-center" style="position: relative;">
             <button id="btn-lang-toggle-start" class="btn small" style="position: absolute; top: 10px; right: 10px; background: var(--accent); color: white; padding: 4px 8px; font-size: 0.8rem;">🇺🇸 EN / 🇧🇷 PT</button>
-            <h1 class="title-main">Burgundy Dice Solo <span style="font-size: 0.35em; color: var(--text-muted); vertical-align: middle;">v1.32</span></h1>
+            <h1 class="title-main">Burgundy Dice Solo <span style="font-size: 0.35em; color: var(--text-muted); vertical-align: middle;">v1.33</span></h1>
             <p class="subtitle" id="txt-subtitle">The Dice Game (Solo Experience)</p>
             <div class="map-selection">
                 <h2 id="txt-select-duchy">Select your Map to start</h2>
@@ -36,7 +36,7 @@
             <h2 id="ui-title"
                 style="margin: 0; font-size: clamp(0.9rem, 3.5vw, 1.4rem); color: var(--text-main); font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 Burgundy Dice Solo <span
-                    style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">v1.32</span>
+                    style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">v1.33</span>
             </h2>
             <div class=" dropdown">
                 <button id="btn-menu" class="btn small"
@@ -152,22 +152,22 @@
             </div>
             <div id="worker-numbers" class="hidden">
                 <p id="txt-worker-pick">Choose the new number:</p>
-                <div style="display:flex; gap:5px; justify-content:center; flex-wrap:wrap;">
+                <div style="display:flex; gap:4px; justify-content:center; flex-wrap:wrap;">
                     <button class="btn val-btn" data-val="1"
-                        style="font-weight:bold; font-size:1.2rem; width:40px; height:40px; background:var(--card-bg);">1</button>
+                        style="font-weight:bold; font-size:1.1rem; width:36px; height:36px; padding:0; background:var(--card-bg);">1</button>
                     <button class="btn val-btn" data-val="2"
-                        style="font-weight:bold; font-size:1.2rem; width:40px; height:40px; background:var(--card-bg);">2</button>
+                        style="font-weight:bold; font-size:1.1rem; width:36px; height:36px; padding:0; background:var(--card-bg);">2</button>
                     <button class="btn val-btn" data-val="3"
-                        style="font-weight:bold; font-size:1.2rem; width:40px; height:40px; background:var(--card-bg);">3</button>
+                        style="font-weight:bold; font-size:1.1rem; width:36px; height:36px; padding:0; background:var(--card-bg);">3</button>
                     <button class="btn val-btn" data-val="4"
-                        style="font-weight:bold; font-size:1.2rem; width:40px; height:40px; background:var(--card-bg);">4</button>
+                        style="font-weight:bold; font-size:1.1rem; width:36px; height:36px; padding:0; background:var(--card-bg);">4</button>
                     <button class="btn val-btn" data-val="5"
-                        style="font-weight:bold; font-size:1.2rem; width:40px; height:40px; background:var(--card-bg);">5</button>
+                        style="font-weight:bold; font-size:1.1rem; width:36px; height:36px; padding:0; background:var(--card-bg);">5</button>
                     <button class="btn val-btn" data-val="6"
-                        style="font-weight:bold; font-size:1.2rem; width:40px; height:40px; background:var(--card-bg);">6</button>
+                        style="font-weight:bold; font-size:1.1rem; width:36px; height:36px; padding:0; background:var(--card-bg);">6</button>
                 </div>
             </div>
-            <button class="btn danger"
+            <button id="txt-cancel-worker" class="btn danger"
                 onclick="document.getElementById('modal-worker').classList.remove('active'); setTimeout(() => document.getElementById('modal-worker').classList.add('hidden'), 300)"
                 style="margin-top:10px; width:100%;">Cancel</button>
         </div>
@@ -176,7 +176,7 @@
     <div id="modal-monk" class="overlay hidden">
         <div class="glass-panel small text-center">
             <h3>Use Monk ✝</h3>
-            <p>Change a color die to any other color.</p>
+            <p id="txt-monk-desc">Change a color die to any other color.</p>
             <div class="color-picker" id="monk-colors">
                 <div class="c-swatch orange" data-c="orange"></div>
                 <div class="c-swatch blue" data-c="blue"></div>
@@ -185,7 +185,7 @@
                 <div class="c-swatch purple" data-c="purple"></div>
                 <div class="c-swatch gray" data-c="gray"></div>
             </div>
-            <p>Target:</p>
+            <p id="txt-monk-target">Target:</p>
             <div class="mod-buttons">
                 <button class="btn" id="btn-m-c1">Color Die 1</button>
                 <button class="btn" id="btn-m-c2">Color Die 2</button>
@@ -370,10 +370,10 @@
                 style="margin-top: 20px;">Close</button>
         </div>
     </div>
-    <script type="module" src="./src/maps.js?v=1.32"></script>
-    <script type="module" src="./src/state.js?v=1.32"></script>
-    <script type="module" src="./src/engine.js?v=1.32"></script>
-    <script type="module" src="./src/main.js?v=1.32"></script>
+    <script type="module" src="./src/maps.js?v=1.33"></script>
+    <script type="module" src="./src/state.js?v=1.33"></script>
+    <script type="module" src="./src/engine.js?v=1.33"></script>
+    <script type="module" src="./src/main.js?v=1.33"></script>
 </body>
 
 </html>
